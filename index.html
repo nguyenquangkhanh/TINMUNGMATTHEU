@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title></title>
+<title>Tin Mừng Mát-thêu Quiz</title>
 
 <style>
 * {
@@ -20,6 +20,15 @@ body {
   min-height: 100vh;
 }
 
+.header {
+  background: linear-gradient(135deg, #1a2744 0%, #0f1729 100%);
+  border-bottom: 1px solid #c9a84c44;
+  padding: 18px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+}
 
 .logo-title {
   font-size: 20px;
@@ -74,7 +83,7 @@ body {
 }
 
 .q-text {
-  font-size: 22px;
+  font-size: 18px;
   line-height: 1.7;
   color: #f3e8d4;
   margin-bottom: 24px;
@@ -169,10 +178,16 @@ body {
 </head>
 
 <body>
+
+<div class="header">
+  <div class="logo-title">✝ TIN MỪNG MAT-THÊU</div>
+  <div class="logo-sub">Giáo phận Thái Bình – Ban Giáo Lý Đức Tin</div>
+</div>
+
 <div class="main" id="quiz"></div>
 
 <div class="footer">
-  
+  Quiz Kinh Thánh Tin Mừng theo Thánh Mát-thêu
 </div>
 
 <script>
