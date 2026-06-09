@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matthew Gospel Quiz (51-100)</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:1000px;margin:auto;padding:20px;background:#f4f4f4}
+.card{background:white;padding:15px;margin:12px 0;border-radius:10px;box-shadow:0 2px 5px rgba(0,0,0,.1)}
+button{padding:12px 20px;font-size:16px;border:none;border-radius:8px;cursor:pointer}
+#result{font-size:20px;font-weight:bold;margin-top:20px}
+.correct{color:green}.wrong{color:red}
+</style>
+</head>
+<body>
+<h1>Matthew Gospel Quiz – Questions 51–100</h1>
+<p>50 câu hỏi Tin Mừng theo Thánh Matthêu.</p>
+<div id="quiz"></div>
+<button onclick="gradeQuiz()">Chấm điểm</button>
+<div id="result"></div>
+
+<script>
+const questions = [
+{q:"51. Ngôn sứ nào đã nói: 'Người đã mang lấy các tật nguyền của ta...'?",o:["I-sai-a","Giê-rê-mi-a","Hô-sê","Ma-la-khi"],a:0},
+{q:"52. Ai nói: 'Thưa Thầy, Thầy đi đâu, tôi cũng xin đi theo'?",o:["Người thanh niên giàu có","Một kinh sư","Người bị quỷ ám","Anh mù từ khi mới sinh"],a:1},
+{q:"53. Đức Giêsu nói 'Con chồn có hang...' với ai?",o:["Nicôđêmô","Người phụ nữ Samari","4 môn đệ đầu tiên","Một kinh sư"],a:3},
+{q:"54. Ai nói: 'Xin cho phép con về chôn cất cha con trước đã'?",o:["Một môn đệ khác","Một kinh sư","Người thanh niên giàu có","Người bị quỷ ám"],a:0},
+{q:"55. Đức Giêsu nói 'Cứ để kẻ chết chôn kẻ chết của họ' với ai?",o:["Một kinh sư","Người thanh niên giàu có","Một môn đệ khác","Người bị quỷ ám"],a:2},
+{q:"56. 'Sao nhát thế, hỡi những người kém lòng tin'?",o:["Simon và Anrê","Các môn đệ","Giacôbê và Gioan","Những người Pharisiêu"],a:1},
+{q:"57. Đức Giêsu chữa hai người bị quỷ ám ở đâu?",o:["Ghennêxarét","Gađara","Caphácnaum","Xêdarê Philípphê"],a:1},
+{q:"58. Dân thành xin Đức Giêsu điều gì sau phép lạ ở Gađara?",o:["Ở lại","Giảng dạy","Rời khỏi vùng đất","Chữa bệnh"],a:2},
+{q:"59. 'Này con, cứ yên tâm, con đã được tha tội rồi' nói với ai?",o:["Bartimê","Người băng huyết","Người mù bẩm sinh","Người bại liệt"],a:3},
+{q:"60. 'Sao các ông lại nghĩ xấu...' nói với ai?",o:["Người Do Thái","Mấy kinh sư","Người Pharisiêu","Cả A,B,C"],a:1},
+{q:"61. 'Đứng dậy, vác giường đi về nhà'?",o:["Người bị quỷ ám","Người bại liệt","Người bị thần ô uế","Một vị thủ lãnh"],a:1},
+{q:"62. 'Anh hãy theo tôi' nói với ai?",o:["Simon và Anrê","Giacôbê và Gioan","Mátthêu","Người bại liệt"],a:2},
+{q:"63. Ai hỏi: 'Sao Thầy các anh lại ăn uống với bọn thu thuế'?",o:["Những người Pharisiêu","Các kinh sư","Các thượng tế","Cả B và C"],a:0},
+{q:"64. 'Con gái tôi vừa mới chết...' ai nói?",o:["Trưởng hội đường","Một vị thủ lãnh","Ông Giaia","Viên sĩ quan"],a:1},
+{q:"65. 'Tôi chỉ cần sờ vào áo Người thôi...' ai nghĩ?",o:["Người bại liệt","Bartimê","Người đàn bà băng huyết","Người mù bẩm sinh"],a:2},
+{q:"66. 'Lòng tin của con đã cứu chữa con'?",o:["Người bại liệt","Người mù bẩm sinh","Người bị quỷ ám","Người đàn bà băng huyết"],a:3},
+{q:"67. 'Lạy Con vua Đavít...' ai nói?",o:["Hai người mù","Bartimê","10 người phong cùi","2 người bị quỷ ám"],a:0},
+{q:"68. 'Các anh có tin là tôi làm được điều ấy không'?",o:["Bartimê","2 người bị quỷ ám","Hai người mù","10 người phong cùi"],a:2},
+{q:"69. 'Các anh tin thế nào thì được như vậy'?",o:["10 người phong cùi","Hai người mù","2 người bị quỷ ám","Viên sĩ quan"],a:1},
+{q:"70. 'Ông ấy dựa thế quỷ vương mà trừ quỷ' ai nói?",o:["Kinh sư","Người Do Thái","Pharisiêu","Cả A và C"],a:2},
+{q:"71. 'Hãy đến với các con chiên lạc nhà Israel' nói với ai?",o:["72 môn đệ","12 Tông Đồ","72 người khác","10 người phong cùi"],a:1},
+{q:"72. Đơn sơ như con vật nào?",o:["Chiên","Sói","Rắn","Bồ câu"],a:3},
+{q:"73. Ví với con vật nào trong Mt 10,28-31?",o:["Bồ câu","Rắn","Chim sẻ","Con chiên"],a:2},
+{q:"74. Ai sai môn đệ hỏi Đức Giêsu 'Thầy có thật là Đấng phải đến không'?",o:["Viên sĩ quan","Trưởng hội đường","Gioan Tẩy Giả","Philatô"],a:2},
+{q:"75. Lúc ấy Gioan ở đâu?",o:["Hoang địa","Sông Giođan","Trong tù","Rừng vắng"],a:2},
+{q:"76. Đức Giêsu nói 'còn hơn cả ngôn sứ' về ai?",o:["Gioan Tông đồ","Giôna","Philípphê","Gioan Tẩy Giả"],a:3},
+{q:"77. 'Này Ta sai sứ giả của Ta...' nói về ai?",o:["Giôna","Gioan Tẩy Giả","Philípphê","Gioan Tông đồ"],a:1},
+{q:"78. Thành nào bị nhắc đến trong Mt 11,23?",o:["Khoradin","Bếtxaiđa","Caphácnaum","Gômôra"],a:2},
+{q:"79. 'Các môn đệ ông làm điều không được phép ngày sabát' ai nói?",o:["Kinh sư","Pharisiêu","Trưởng hội đường","Cả A và C"],a:1},
+{q:"80. Ngôn sứ nào nói: 'Đây là Người Tôi Tớ Ta đã tuyển chọn'?",o:["Giôna","Mikha","Isaia","Giêrêmia"],a:2},
+{q:"81. 'Nhờ quỷ vương Bêendêbun' ai nói?",o:["Kinh sư","Người Do Thái","Pharisiêu","Cả A và C"],a:2},
+{q:"82. 'Chúng tôi muốn thấy Thầy làm dấu lạ'?",o:["Mấy kinh sư","Mấy người Pharisiêu","Người Do Thái","Cả A và B"],a:3},
+{q:"83. 'Thế hệ gian ác...' nói với ai?",o:["Mấy kinh sư","Mấy người Pharisiêu","Người Do Thái","Cả A và B"],a:3},
+{q:"84. Thành nào được nhắc khi kể chuyện Giôna?",o:["Xơđôm","Ninivê","Gômôra","Khoradin"],a:1},
+{q:"85. Hạt giống bị chim ăn mất rơi vào đâu?",o:["Sỏi đá","Vệ đường","Bụi gai","Đất tốt"],a:1},
+{q:"86. Hạt mọc ngay vì đất không sâu rơi vào đâu?",o:["Bụi gai","Vệ đường","Đất tốt","Sỏi đá"],a:3},
+{q:"87. Hạt bị chim ăn mất rơi vào đâu?",o:["Vệ đường","Sỏi đá","Bụi gai","Đất tốt"],a:0},
+{q:"88. Ngôn sứ nào nói 'Có lắng tai nghe cũng chẳng hiểu'?",o:["Giôna","Mikha","Isaia","Giêrêmia"],a:2},
+{q:"89. Kẻ nghe Lời mà không hiểu là hạt gieo vào đâu?",o:["Sỏi đá","Bụi gai","Vệ đường","Đất tốt"],a:2},
+{q:"90. Kẻ vui vẻ đón nhận nhưng không đâm rễ là hạt gieo vào đâu?",o:["Bụi gai","Vệ đường","Sỏi đá","Đất tốt"],a:2},
+{q:"91. Bị nỗi lo đời bóp nghẹt là hạt gieo vào đâu?",o:["Bụi gai","Vệ đường","Sỏi đá","Đất tốt"],a:0},
+{q:"92. Sinh hoa kết quả là hạt gieo vào đâu?",o:["Vệ đường","Sỏi đá","Đất tốt","Bụi gai"],a:2},
+{q:"93. Hạt nhỏ nhất nhưng lớn thành cây là hạt gì?",o:["Hạt ớt","Hạt cải","Hạt vừng","Hạt tiêu"],a:1},
+{q:"94. Ai xin giải nghĩa dụ ngôn cỏ lùng?",o:["Đám đông","Pharisiêu","Các môn đệ","Kinh sư"],a:2},
+{q:"95. Kẻ gieo giống tốt là ai?",o:["Con Người","Các thiên thần","Ông chủ ruộng","Thiên Chúa Cha"],a:0},
+{q:"96. Ruộng tượng trưng cho gì?",o:["Các môn đệ","Nước Trời","Thế gian","Thế giới ác thần"],a:2},
+{q:"97. Hạt giống tốt là ai?",o:["Con cái thế gian","Con cái Nước Trời","Con cái Ác Thần","Con cái sự sáng"],a:1},
+{q:"98. Cỏ lùng là ai?",o:["Con cái thế gian","Con cái Nước Trời","Con cái Ác Thần","Con cái sự sáng"],a:2},
+{q:"99. Kẻ thù gieo cỏ lùng là ai?",o:["Kẻ không nghe lời","Các thần dữ","Ác thần","Ma quỷ"],a:3},
+{q:"100. Mùa gặt tượng trưng cho gì?",o:["Ngày Chúa đến","Ngày quang lâm","Ngày tận thế","Ngày cánh chung"],a:2}
+];
+
+const quiz=document.getElementById('quiz');
+questions.forEach((q,i)=>{
+ let html=`<div class="card"><b>${q.q}</b>`;
+ q.o.forEach((op,j)=>{
+   html+=`<div><label><input type="radio" name="q${i}" value="${j}"> ${op}</label></div>`;
+ });
+ html+='</div>';
+ quiz.innerHTML+=html;
+});
+
+function gradeQuiz(){
+ let score=0;
+ questions.forEach((q,i)=>{
+   const c=document.querySelector(`input[name=q${i}]:checked`);
+   if(c && Number(c.value)===q.a) score++;
+ });
+ document.getElementById('result').innerHTML=`Điểm số: ${score}/50 (${(score/50*100).toFixed(1)}%)`;
+}
+</script>
+</body>
+</html>
