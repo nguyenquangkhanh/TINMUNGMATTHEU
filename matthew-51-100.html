@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tin Mừng theo Thánh Mát-thêu – Câu 51-100</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: linear-gradient(160deg,#fdf6ec 0%,#f0e0c0 100%);
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 32px 16px 48px;
+    font-family: 'Segoe UI','Helvetica Neue',Arial,sans-serif;
+  }
+  #app { width: 100%; max-width: 640px; }
+  .header { text-align: center; margin-bottom: 28px; }
+  .header-eyebrow { font-size: 13px; letter-spacing: 3px; color: #b5855a; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
+  .header h1 { font-size: 24px; font-weight: 800; color: #3a2a14; line-height: 1.3; }
+  .header p { font-size: 13.5px; color: #9a7a50; margin-top: 6px; }
+  .card { background: #fff; border-radius: 18px; padding: 28px 28px 24px; box-shadow: 0 8px 40px rgba(140,90,30,0.10), 0 2px 8px rgba(140,90,30,0.06); }
+
+  .progress-meta { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; color: #7a6a55; }
+  .progress-track { height: 7px; background: #e8dece; border-radius: 4px; overflow: hidden; margin-bottom: 20px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg,#b5855a,#d4a76a); border-radius: 4px; transition: width 0.4s ease; }
+
+  .question-box { background: linear-gradient(135deg,#fdf6ec 0%,#f9eedc 100%); border: 1.5px solid #e2c99a; border-radius: 14px; padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(160,110,50,0.08); }
+  .question-eyebrow { font-size: 11px; letter-spacing: 2px; color: #b5855a; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+  .question-text { font-size: 15.5px; line-height: 1.7; color: #3a2a14; font-weight: 500; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt-btn {
+    display: flex; align-items: center; gap: 14px;
+    padding: 13px 18px; background: #fff;
+    border: 1.5px solid #ddd; border-radius: 10px;
+    cursor: pointer; color: #3a2a14;
+    font-family: inherit; font-size: 14.5px; line-height: 1.5;
+    text-align: left; transition: all 0.18s ease; width: 100%;
+  }
+  .opt-btn:hover:not(:disabled) { background: #fdf0dc; }
+  .opt-btn:disabled { cursor: default; }
+  .opt-btn.correct { background: #eaf7ec; border: 2px solid #4caf7d; color: #1a6b3a; }
+  .opt-btn.wrong   { background: #fdecea; border: 2px solid #e06060; color: #8b1c1c; }
+  .opt-btn.selected-pending { background: #fef3e2; border: 2px solid #d4a76a; color: #7a4a10; }
+
+  .opt-label {
+    min-width: 30px; height: 30px; border-radius: 50%;
+    background: #f0e8d8; color: #9a7a50;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; flex-shrink: 0; transition: all 0.18s;
+  }
+  .opt-btn.correct   .opt-label { background: #4caf7d; color: #fff; }
+  .opt-btn.wrong     .opt-label { background: #e06060; color: #fff; }
+  .opt-btn.selected-pending .opt-label { background: #d4a76a; color: #fff; }
+  .opt-icon { margin-left: auto; font-size: 18px; }
+
+  .feedback { margin-top: 20px; text-align: right; animation: fadeIn 0.25s ease; }
+  .feedback-badge { display: inline-block; padding: 7px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 600; margin-bottom: 12px; margin-right: 8px; }
+  .feedback-badge.ok  { background: #eaf7ec; color: #1a6b3a; }
+  .feedback-badge.err { background: #fdecea; color: #8b1c1c; }
+
+  .btn-primary { background: linear-gradient(135deg,#c8944a,#d4a76a); color: #fff; border: none; padding: 11px 28px; border-radius: 9px; cursor: pointer; font-family: inherit; font-size: 15px; font-weight: 700; box-shadow: 0 3px 12px rgba(180,120,50,0.22); transition: opacity 0.15s; }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-outline { background: none; border: 1.5px solid #d4a76a; color: #b5855a; padding: 9px 20px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 600; margin-bottom: 16px; transition: background 0.15s; }
+  .btn-outline:hover { background: #fdf0dc; }
+  .btn-restart { background: linear-gradient(135deg,#c8944a,#d4a76a); color: #fff; border: none; padding: 13px 36px; border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 16px; font-weight: 700; box-shadow: 0 4px 16px rgba(180,120,50,0.25); }
+
+  .result { text-align: center; }
+  .result-medal { font-size: 64px; margin-bottom: 12px; }
+  .result h2 { font-size: 26px; color: #3a2a14; margin-bottom: 6px; }
+  .result-msg { font-size: 17px; font-weight: 700; margin-bottom: 20px; }
+  .result-score-box { background: linear-gradient(135deg,#fdf6ec,#f5e8cc); border: 1.5px solid #e2c99a; border-radius: 16px; padding: 28px 24px; margin-bottom: 24px; box-shadow: 0 2px 14px rgba(160,110,50,0.1); }
+  .result-number { font-size: 52px; font-weight: 800; color: #b5855a; }
+  .result-total { font-size: 22px; color: #9a7a50; }
+  .result-label { font-size: 15px; color: #7a6a55; margin-top: 4px; }
+  .result-bar-track { height: 10px; background: #e8dece; border-radius: 5px; margin-top: 16px; overflow: hidden; }
+  .result-bar-fill { height: 100%; background: linear-gradient(90deg,#b5855a,#d4a76a); border-radius: 5px; }
+
+  #wrong-list { text-align: left; margin-bottom: 20px; }
+  .wrong-item { background: #fdf4f4; border: 1.5px solid #f0c8c8; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+  .wrong-item-num { font-size: 12px; color: #b5855a; font-weight: 700; margin-bottom: 4px; }
+  .wrong-item-q { font-size: 13.5px; color: #3a2a14; line-height: 1.6; margin-bottom: 8px; }
+  .wrong-item-yours { font-size: 13px; color: #c0392b; }
+  .wrong-item-ans   { font-size: 13px; color: #27ae60; }
+
+  @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  .fade-in { animation: fadeIn 0.35s ease; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div class="header-eyebrow">Bộ câu hỏi thi</div>
+    <h1>Tin Mừng theo Thánh Mát-thêu</h1>
+    <p>Kiến thức tổng hợp · Câu 51–100</p>
+  </div>
+  <div class="card" id="main-card"></div>
+</div>
+
+<script>
+const LABELS = ["A","B","C","D"];
+
+const questions = [
+  {id:51,q:"\"Người đã mang lấy các tật nguyền của ta và gánh lấy các bệnh hoạn của ta\". Ngôn sứ nào đã nói câu này? (x. Mt 8,16-17)",opts:["I-sai-a","Giê-rê-mi-a","Hô-sê","Ma-la-khi"],ans:"A"},
+  {id:52,q:"\"Thưa Thầy, Thầy đi đâu, tôi cũng xin đi theo.\" Ai đã nói câu này? (x. Mt 8,19)",opts:["Người thanh niên giàu có","Một kinh sư","Người bị quỷ ám","Anh mù từ khi mới sinh"],ans:"B"},
+  {id:53,q:"\"Con chồn có hang, chim trời có tổ, nhưng Con Người không có chỗ tựa đầu.\" Đức Giê-su nói câu này với ai? (x. Mt 8,20)",opts:["Ông Ni-cô-đê-mô","Người phụ nữ Sa-ma-ri","4 môn đệ đầu tiên","Một kinh sư"],ans:"D"},
+  {id:54,q:"\"Thưa Ngài, xin cho phép con về chôn cất cha con trước đã.\" Ai đã nói câu này? (x. Mt 8,21)",opts:["Một môn đệ khác","Một kinh sư","Người thanh niên giàu có","Người bị quỷ ám"],ans:"A"},
+  {id:55,q:"\"Anh hãy đi theo tôi, cứ để kẻ chết chôn kẻ chết của họ.\" Đức Giê-su nói câu này với ai? (x. Mt 8,22)",opts:["Một kinh sư","Người thanh niên giàu có","Một môn đệ khác","Người bị quỷ ám"],ans:"C"},
+  {id:56,q:"\"Sao nhát thế, hỡi những người kém lòng tin!\" Đức Giê-su nói câu này với ai? (x. Mt 8,23-26)",opts:["Si-môn và An-rê","Các môn đệ","Gia-cô-bê và Gio-an","Những người Pha-ri-sêu"],ans:"B"},
+  {id:57,q:"Đức Giê-su chữa hai người bị quỷ ám ở đâu? (x. Mt 8,28)",opts:["Ghen-nê-xa-rét","Ga-đa-ra","Ca-phác-na-um","Xê-da-rê Phi-líp-phê"],ans:"B"},
+  {id:58,q:"Sau phép lạ Đức Giê-su trừ quỷ ở Ga-đa-ra, cả thành ra đón Đức Giê-su. Khi gặp Người, họ đã xin Người điều gì? (x. Mt 8,34)",opts:["Ở lại với họ","Giảng cho họ nghe","Rời khỏi vùng đất của họ","Chữa lành bệnh tật"],ans:"C"},
+  {id:59,q:"\"Này con, cứ yên tâm, con đã được tha tội rồi!\" Đức Giê-su nói câu này với ai? (x. Mt 9,2)",opts:["Anh mù Ba-ti-mê","Người đàn bà bị băng huyết","Người mù từ khi mới sinh","Người bại liệt"],ans:"D"},
+  {id:60,q:"\"Sao các ông lại nghĩ xấu trong bụng như vậy? Trong hai điều: một là bảo: 'Con đã được tha tội rồi', hai là bảo: 'Đứng dậy mà đi', điều nào dễ hơn?\" Đức Giê-su nói câu này với ai? (x. Mt 9,4-5)",opts:["Những người Do-thái","Mấy kinh sư","Người Pha-ri-sêu","Cả A, B và C"],ans:"B"},
+  {id:61,q:"\"Đứng dậy, vác giường đi về nhà!\" Đức Giê-su nói câu này với ai? (x. Mt 9,6)",opts:["Người bị quỷ ám","Người bại liệt","Người bị thần ô uế ám","Một vị thủ lãnh"],ans:"B"},
+  {id:62,q:"\"Anh hãy theo tôi!\" Đức Giê-su nói câu này với ai? (x. Mt 9,9)",opts:["Si-môn và An-rê","Gia-cô-bê và Gio-an","Mát-thêu","Người bại liệt"],ans:"C"},
+  {id:63,q:"\"Sao Thầy các anh lại ăn uống với bọn thu thuế và quân tội lỗi như vậy?\" Ai đã nói lời này với các môn đệ? (x. Mt 9,11)",opts:["Những người Pha-ri-sêu","Các kinh sư","Các thượng tế","Cả B và C"],ans:"A"},
+  {id:64,q:"\"Con gái tôi vừa mới chết. Nhưng xin Ngài đến đặt tay lên cháu, là nó sẽ sống.\" Ai đã nói câu này? (x. Mt 9,18)",opts:["Ông trưởng hội đường","Một vị thủ lãnh","Ông Gia-ia","Viên sĩ quan ngoại giáo"],ans:"B"},
+  {id:65,q:"\"Tôi chỉ cần sờ được vào áo của Người thôi là sẽ được cứu!\" Ai đã nghĩ bụng như vậy? (x. Mt 9,20-21)",opts:["Người bại liệt","Anh mù Ba-ti-mê","Người đàn bà bị băng huyết","Anh mù từ khi mới sinh"],ans:"C"},
+  {id:66,q:"\"Này con, cứ yên tâm, lòng tin của con đã cứu chữa con.\" Đức Giê-su đã nói câu này với ai? (x. Mt 9,20-22)",opts:["Người bại liệt","Anh mù từ khi mới sinh","Người bị quỷ ám","Người đàn bà bị băng huyết"],ans:"D"},
+  {id:67,q:"\"Lạy Con vua Đa-vít, xin thương xót chúng tôi!\" Ai đã nói câu này? (x. Mt 9,27)",opts:["Hai người mù","Anh mù Ba-ti-mê","10 người phong cùi","2 người bị quỷ ám"],ans:"A"},
+  {id:68,q:"\"Các anh có tin là tôi làm được điều ấy không?\" Đức Giê-su đã nói câu này với ai? (x. Mt 9,27-28)",opts:["Anh mù Ba-ti-mê","2 người bị quỷ ám","Hai người mù","10 người phong cùi"],ans:"C"},
+  {id:69,q:"\"Các anh tin thế nào thì được như vậy.\" Đức Giê-su đã nói câu này với ai? (x. Mt 9,29)",opts:["10 người phong cùi","Hai người mù","2 người bị quỷ ám","Viên sĩ quan ngoại giáo"],ans:"B"},
+  {id:70,q:"\"Ông ấy dựa thế quỷ vương mà trừ quỷ.\" Ai đã nói câu này? (x. Mt 9,32-34)",opts:["Các kinh sư","Người Do-thái","Người Pha-ri-sêu","Cả A và C"],ans:"C"},
+  {id:71,q:"\"Anh em đừng đi về phía các dân ngoại, cũng đừng vào thành nào của dân Sa-ma-ri. Tốt hơn là hãy đến với các con chiên lạc nhà Ít-ra-en\". Đức Giê-su nói câu này với ai? (x. Mt 10,1-6)",opts:["72 môn đệ","12 Tông Đồ","72 người khác","10 người phong cùi"],ans:"B"},
+  {id:72,q:"Khi sai 12 Tông Đồ đi rao giảng, Ngài khuyên bảo họ phải có thái độ đơn sơ như con vật nào? (x. Mt 10,16)",opts:["Chiên","Sói","Rắn","Bồ câu"],ans:"D"},
+  {id:73,q:"Khi dạy các môn đệ bài học về \"Hãy nói giữa ban ngày, đừng có sợ\", Đức Giê-su đã ví họ với con vật nào? (x. Mt 10,28-31)",opts:["Bồ câu","Rắn","Chim sẻ","Con chiên"],ans:"C"},
+  {id:74,q:"\"Thưa Thầy, Thầy có thật là Đấng phải đến không, hay là chúng tôi còn phải đợi ai khác?\" Ai đã sai môn đệ đến hỏi Đức Giê-su câu này? (x. Mt 11,2-3)",opts:["Viên sĩ quan ngoại giáo","Ông trưởng hội đường","Gioan Tẩy Giả","Tổng trấn Phi-la-tô"],ans:"C"},
+  {id:75,q:"\"Thưa Thầy, Thầy có thật là Đấng phải đến không, hay là chúng tôi còn phải đợi ai khác?\" Khi sai môn đệ đến hỏi Đức Giê-su câu này, lúc ấy ông Gioan đang ở đâu? (x. Mt 11,2-3)",opts:["Hoang địa","Sông Gio-đan","Trong tù","Trong rừng vắng"],ans:"C"},
+  {id:76,q:"\"Thế thì anh em ra xem gì? Một vị ngôn sứ chăng? Đúng thế đó; mà tôi nói cho anh em biết, đây còn hơn cả ngôn sứ nữa\". Đức Giê-su nói những lời này về ai? (x. Mt 11,7-10)",opts:["Gio-an Tông Đồ","Giô-na","Phi-líp-phê","Gioan Tẩy Giả"],ans:"D"},
+  {id:77,q:"\"Chính ông là người Kinh Thánh đã nói tới khi chép rằng: Này Ta sai sứ giả của Ta đi trước mặt Con, người sẽ dọn đường cho Con đến\". Đức Giê-su nói về ai? (x. Mt 11,7-10)",opts:["Giô-na","Gioan Tẩy Giả","Phi-líp-phê","Gio-an Tông Đồ"],ans:"B"},
+  {id:78,q:"\"Còn ngươi nữa, ngươi tưởng sẽ được nâng lên đến tận trời ư? Ngươi sẽ phải nhào xuống tận âm phủ!...\" Đức Giê-su nói về thành nào? (x. Mt 11,23)",opts:["Kho-ra-din","Bết-xai-đa","Ca-phác-na-um","Gô-mô-ra"],ans:"C"},
+  {id:79,q:"\"Ông coi, các môn đệ ông làm điều không được phép làm ngày sa-bát!\" Ai đã nói câu này? (x. Mt 12,2)",opts:["Các kinh sư","Người Pha-ri-sêu","Ông Trưởng hội đường","Cả A và C"],ans:"B"},
+  {id:80,q:"\"Đây là Người Tôi Tớ Ta đã tuyển chọn, đây là người Ta yêu dấu: Ta hài lòng về Người. Ta cho Thần Khí Ta ngự trên Người. Người sẽ loan báo công lý trước muôn dân\". Ngôn sứ nào đã nói câu này? (x. Mt 12,17-18)",opts:["Giô-na","Mi-kha","I-sai-a","Giê-rê-mi-a"],ans:"C"},
+  {id:81,q:"\"Ông này trừ được quỷ chỉ là nhờ dựa thế quỷ vương Bê-en-dê-bun.\" Ai đã nói câu này? (x. Mt 12,24)",opts:["Các kinh sư","Các người Do-thái","Người Pha-ri-sêu","Cả A và C"],ans:"C"},
+  {id:82,q:"\"Thưa Thầy, chúng tôi muốn thấy Thầy làm một dấu lạ.\" Ai đã nói câu này? (x. Mt 12,38)",opts:["Mấy kinh sư","Mấy người Pha-ri-sêu","Các người Do-thái","Cả A và B"],ans:"D"},
+  {id:83,q:"\"Thế hệ gian ác và ngoại tình này đòi dấu lạ. Nhưng chúng sẽ không được dấu lạ nào, ngoài dấu lạ ngôn sứ Giô-na.\" Đức Giê-su nói câu này với ai? (x. Mt 12,38-39)",opts:["Mấy kinh sư","Mấy người Pha-ri-sêu","Các người Do-thái","Cả A và B"],ans:"D"},
+  {id:84,q:"Khi kể về câu chuyện ông Gio-na, Đức Giê-su đã nhắc đến tên của thành nào trong Cựu Ước? (x. Mt 12,41)",opts:["Xơ-đôm","Thành Ni-ni-vê","Gô-mô-ra","Kho-ra-din"],ans:"B"},
+  {id:85,q:"Những hạt giống khi gieo xuống bị chim chóc đến ăn mất, đó là loại hạt giống rơi vào đâu? (x. Mt 13,4)",opts:["Rơi trên sỏi đá","Rơi xuống vệ đường","Rơi vào bụi gai","Rơi trên đất tốt"],ans:"B"},
+  {id:86,q:"Những hạt giống khi gieo xuống thì nó mọc ngay vì đất không sâu, đó là loại hạt giống rơi vào đâu? (x. Mt 13,5)",opts:["Bụi gai","Vệ đường","Đất tốt","Sỏi đá"],ans:"D"},
+  {id:87,q:"Những hạt giống khi gieo xuống bị chim chóc đến ăn mất là loại hạt giống rơi vào đâu? (x. Mt 13,4)",opts:["Vệ đường","Trên sỏi đá","Bụi gai","Đất tốt"],ans:"A"},
+  {id:88,q:"\"Các ngươi có lắng tai nghe cũng chẳng hiểu, có trố mắt nhìn cũng chẳng thấy; vì lòng dân này đã ra chai đá\". Ngôn sứ nào đã nói câu này? (x. Mt 13,14-15)",opts:["Giô-na","Mi-kha","I-sai-a","Giê-rê-mi-a"],ans:"C"},
+  {id:89,q:"\"Hễ ai nghe lời rao giảng Nước Trời mà không hiểu, thì quỷ dữ đến cướp đi điều đã gieo trong lòng người ấy\". Đó là kẻ đã được gieo vào đâu? (x. Mt 13,19)",opts:["Sỏi đá","Bụi gai","Vệ đường","Đất tốt"],ans:"C"},
+  {id:90,q:"\"Kẻ nghe Lời và liền vui vẻ đón nhận. Nhưng nó không đâm rễ mà là kẻ nhất thời: khi gặp gian nan hay bị ngược đãi vì Lời, nó vấp ngã ngay\". Đó là kẻ được gieo vào đâu? (x. Mt 13,20-21)",opts:["Bụi gai","Vệ đường","Sỏi đá","Đất tốt"],ans:"C"},
+  {id:91,q:"\"Kẻ nghe Lời, nhưng nỗi lo lắng sự đời, và bả vinh hoa phú quý bóp nghẹt, khiến Lời không sinh hoa kết quả gì\". Đó là kẻ được gieo vào đâu? (x. Mt 13,22)",opts:["Bụi gai","Vệ đường","Sỏi đá","Đất tốt"],ans:"A"},
+  {id:92,q:"\"Kẻ nghe Lời và hiểu, thì tất nhiên sinh hoa kết quả và làm ra, kẻ được gấp trăm, kẻ được sáu chục, kẻ được ba chục.\" Đó là kẻ được gieo vào đâu? (x. Mt 13,23)",opts:["Vệ đường","Sỏi đá","Đất tốt","Bụi gai"],ans:"C"},
+  {id:93,q:"\"Tuy nó là loại nhỏ nhất trong tất cả các hạt giống, nhưng khi lớn lên, thì lại là thứ lớn nhất; nó trở thành cây, đến nỗi chim trời tới làm tổ trên cành được.\" Đức Giê-su nói về loại hạt nào? (x. Mt 13,31-32)",opts:["Hạt ớt","Hạt cải","Hạt vừng","Hạt tiêu"],ans:"B"},
+  {id:94,q:"\"Xin Thầy giải nghĩa dụ ngôn cỏ lùng trong ruộng cho chúng con nghe.\" Ai đã nói câu này? (x. Mt 13,36)",opts:["Đám đông dân chúng","Người Pha-ri-sêu","Các môn đệ","Các kinh sư"],ans:"C"},
+  {id:95,q:"Khi giải nghĩa Dụ ngôn cỏ lùng, Đức Giê-su nói kẻ gieo giống tốt là ai? (x. Mt 13,37)",opts:["Con Người","Các Thiên Thần","Ông chủ ruộng","Thiên Chúa Cha"],ans:"A"},
+  {id:96,q:"Khi giải nghĩa Dụ ngôn cỏ lùng, Đức Giê-su ví ruộng với ai? (x. Mt 13,38)",opts:["Các môn đệ","Nước Trời","Thế gian","Thế giới của Ác Thần"],ans:"C"},
+  {id:97,q:"Khi giải nghĩa Dụ ngôn cỏ lùng, Đức Giê-su ví hạt giống tốt với ai? (x. Mt 13,38)",opts:["Con cái thế gian","Con cái Nước Trời","Con cái Ác Thần","Con cái sự sáng"],ans:"B"},
+  {id:98,q:"Khi giải nghĩa Dụ ngôn cỏ lùng, Đức Giê-su ví cỏ lùng với ai? (x. Mt 13,38)",opts:["Con cái thế gian","Con cái Nước Trời","Con cái Ác Thần","Con cái sự sáng"],ans:"C"},
+  {id:99,q:"Khi giải nghĩa Dụ ngôn cỏ lùng, Đức Giê-su ví kẻ thù đã gieo cỏ lùng với ai? (x. Mt 13,39)",opts:["Những kẻ không nghe lời","Các Thần dữ","Ác Thần","Ma quỷ"],ans:"D"},
+  {id:100,q:"Khi giải nghĩa Dụ ngôn cỏ lùng, Đức Giê-su ví mùa gặt với cái gì? (x. Mt 13,39)",opts:["Ngày Chúa đến","Ngày Chúa quang lâm","Ngày tận thế","Ngày cánh chung"],ans:"C"},
+];
+
+let current = 0, selected = null, revealed = false, answers = [], done = false, showWrong = false;
+const card = document.getElementById('main-card');
+
+function render() { done ? renderResult() : renderQuiz(); }
+
+function renderQuiz() {
+  const q = questions[current];
+  const pct = Math.round((current / questions.length) * 100);
+  const optionsHTML = q.opts.map((opt, i) => {
+    const label = LABELS[i];
+    let cls = 'opt-btn', icon = '';
+    if (revealed) {
+      if (label === q.ans) { cls += ' correct'; icon = '<span class="opt-icon">✓</span>'; }
+      else if (label === selected) { cls += ' wrong'; icon = '<span class="opt-icon">✗</span>'; }
+    } else if (label === selected) { cls += ' selected-pending'; }
+    return `<button class="${cls}" ${revealed?'disabled':''} onclick="handleAnswer('${label}')">
+      <span class="opt-label">${label}</span><span>${esc(opt)}</span>${icon}
+    </button>`;
+  }).join('');
+
+  const feedbackHTML = revealed ? `
+    <div class="feedback">
+      <span class="feedback-badge ${selected===q.ans?'ok':'err'}">${selected===q.ans?'✓ Chính xác!':'✗ Đáp án đúng: '+q.ans}</span>
+      <button class="btn-primary" onclick="handleNext()">${current+1<questions.length?'Câu tiếp theo →':'Xem kết quả'}</button>
+    </div>` : '';
+
+  card.innerHTML = `<div class="fade-in">
+    <div class="progress-meta"><span>Câu ${q.id} &nbsp;(${current+1}/${questions.length})</span><span>${pct}%</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="question-box">
+      <div class="question-eyebrow">Câu hỏi ${q.id}</div>
+      <p class="question-text">${esc(q.q)}</p>
+    </div>
+    <div class="options">${optionsHTML}</div>
+    ${feedbackHTML}
+  </div>`;
+}
+
+function renderResult() {
+  const score = answers.filter(a=>a.selected===a.ans).length;
+  const pct = Math.round((score/questions.length)*100);
+  const wrong = answers.filter(a=>a.selected!==a.ans);
+  let medal='🥉',msg='Cần cố gắng thêm!',msgColor='#c0392b';
+  if(pct>=90){medal='🏆';msg='Xuất sắc!';msgColor='#c9860c';}
+  else if(pct>=70){medal='🥇';msg='Làm tốt lắm!';msgColor='#27ae60';}
+  else if(pct>=50){medal='🥈';msg='Khá tốt!';msgColor='#2980b9';}
+
+  const wrongToggle = wrong.length>0
+    ?`<button class="btn-outline" onclick="toggleWrong()">${showWrong?'Ẩn câu sai':'Xem '+wrong.length+' câu sai'}</button>`:''  ;
+  const wrongHTML = showWrong ? `<div id="wrong-list">`+wrong.map(w=>{
+    const yi=LABELS.indexOf(w.selected), ai=LABELS.indexOf(w.ans);
+    return `<div class="wrong-item">
+      <div class="wrong-item-num">Câu ${w.id}</div>
+      <p class="wrong-item-q">${esc(w.q)}</p>
+      <div class="wrong-item-yours">Bạn chọn: <b>${w.selected}</b> — ${esc(w.opts[yi])}</div>
+      <div class="wrong-item-ans">Đáp án: <b>${w.ans}</b> — ${esc(w.opts[ai])}</div>
+    </div>`;
+  }).join('')+`</div>` : '';
+
+  card.innerHTML = `<div class="result fade-in">
+    <div class="result-medal">${medal}</div>
+    <h2>Kết quả</h2>
+    <p class="result-msg" style="color:${msgColor}">${msg}</p>
+    <div class="result-score-box">
+      <div><span class="result-number">${score}</span><span class="result-total">/${questions.length}</span></div>
+      <div class="result-label">Trả lời đúng — ${pct}%</div>
+      <div class="result-bar-track"><div class="result-bar-fill" style="width:${pct}%"></div></div>
+    </div>
+    ${wrongToggle}${wrongHTML}
+    <button class="btn-restart" onclick="handleRestart()">Làm lại từ đầu</button>
+  </div>`;
+}
+
+function handleAnswer(label) {
+  if(revealed) return;
+  selected=label; revealed=true; render();
+}
+function handleNext() {
+  const q=questions[current];
+  answers.push({id:q.id,q:q.q,opts:q.opts,ans:q.ans,selected});
+  if(current+1>=questions.length){done=true;}
+  else{current++;selected=null;revealed=false;}
+  render();
+}
+function handleRestart(){current=0;selected=null;revealed=false;answers=[];done=false;showWrong=false;render();}
+function toggleWrong(){showWrong=!showWrong;renderResult();}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+render();
+</script>
+</body>
+</html>
