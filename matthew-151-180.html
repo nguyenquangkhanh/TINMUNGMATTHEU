@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tin Mừng theo Thánh Mát-thêu – Câu 151-180</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: linear-gradient(160deg,#fdf6ec 0%,#f0e0c0 100%);
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 32px 16px 48px;
+    font-family: 'Segoe UI','Helvetica Neue',Arial,sans-serif;
+  }
+  #app { width: 100%; max-width: 640px; }
+  .header { text-align: center; margin-bottom: 28px; }
+  .header-eyebrow { font-size: 13px; letter-spacing: 3px; color: #b5855a; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
+  .header h1 { font-size: 24px; font-weight: 800; color: #3a2a14; line-height: 1.3; }
+  .header p { font-size: 13.5px; color: #9a7a50; margin-top: 6px; }
+  .card { background: #fff; border-radius: 18px; padding: 28px 28px 24px; box-shadow: 0 8px 40px rgba(140,90,30,0.10), 0 2px 8px rgba(140,90,30,0.06); }
+
+  .progress-meta { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; color: #7a6a55; }
+  .progress-track { height: 7px; background: #e8dece; border-radius: 4px; overflow: hidden; margin-bottom: 20px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg,#b5855a,#d4a76a); border-radius: 4px; transition: width 0.4s ease; }
+
+  .question-box { background: linear-gradient(135deg,#fdf6ec 0%,#f9eedc 100%); border: 1.5px solid #e2c99a; border-radius: 14px; padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(160,110,50,0.08); }
+  .question-eyebrow { font-size: 11px; letter-spacing: 2px; color: #b5855a; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+  .question-text { font-size: 15.5px; line-height: 1.7; color: #3a2a14; font-weight: 500; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt-btn {
+    display: flex; align-items: center; gap: 14px;
+    padding: 13px 18px; background: #fff;
+    border: 1.5px solid #ddd; border-radius: 10px;
+    cursor: pointer; color: #3a2a14;
+    font-family: inherit; font-size: 14.5px; line-height: 1.5;
+    text-align: left; transition: all 0.18s ease; width: 100%;
+  }
+  .opt-btn:hover:not(:disabled) { background: #fdf0dc; }
+  .opt-btn:disabled { cursor: default; }
+  .opt-btn.correct { background: #eaf7ec; border: 2px solid #4caf7d; color: #1a6b3a; }
+  .opt-btn.wrong   { background: #fdecea; border: 2px solid #e06060; color: #8b1c1c; }
+  .opt-btn.selected-pending { background: #fef3e2; border: 2px solid #d4a76a; color: #7a4a10; }
+
+  .opt-label {
+    min-width: 30px; height: 30px; border-radius: 50%;
+    background: #f0e8d8; color: #9a7a50;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; flex-shrink: 0; transition: all 0.18s;
+  }
+  .opt-btn.correct   .opt-label { background: #4caf7d; color: #fff; }
+  .opt-btn.wrong     .opt-label { background: #e06060; color: #fff; }
+  .opt-btn.selected-pending .opt-label { background: #d4a76a; color: #fff; }
+  .opt-icon { margin-left: auto; font-size: 18px; }
+
+  .feedback { margin-top: 20px; text-align: right; animation: fadeIn 0.25s ease; }
+  .feedback-badge { display: inline-block; padding: 7px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 600; margin-bottom: 12px; margin-right: 8px; }
+  .feedback-badge.ok  { background: #eaf7ec; color: #1a6b3a; }
+  .feedback-badge.err { background: #fdecea; color: #8b1c1c; }
+
+  .btn-primary { background: linear-gradient(135deg,#c8944a,#d4a76a); color: #fff; border: none; padding: 11px 28px; border-radius: 9px; cursor: pointer; font-family: inherit; font-size: 15px; font-weight: 700; box-shadow: 0 3px 12px rgba(180,120,50,0.22); transition: opacity 0.15s; }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-outline { background: none; border: 1.5px solid #d4a76a; color: #b5855a; padding: 9px 20px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 600; margin-bottom: 16px; transition: background 0.15s; }
+  .btn-outline:hover { background: #fdf0dc; }
+  .btn-restart { background: linear-gradient(135deg,#c8944a,#d4a76a); color: #fff; border: none; padding: 13px 36px; border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 16px; font-weight: 700; box-shadow: 0 4px 16px rgba(180,120,50,0.25); }
+
+  .result { text-align: center; }
+  .result-medal { font-size: 64px; margin-bottom: 12px; }
+  .result h2 { font-size: 26px; color: #3a2a14; margin-bottom: 6px; }
+  .result-msg { font-size: 17px; font-weight: 700; margin-bottom: 20px; }
+  .result-score-box { background: linear-gradient(135deg,#fdf6ec,#f5e8cc); border: 1.5px solid #e2c99a; border-radius: 16px; padding: 28px 24px; margin-bottom: 24px; box-shadow: 0 2px 14px rgba(160,110,50,0.1); }
+  .result-number { font-size: 52px; font-weight: 800; color: #b5855a; }
+  .result-total { font-size: 22px; color: #9a7a50; }
+  .result-label { font-size: 15px; color: #7a6a55; margin-top: 4px; }
+  .result-bar-track { height: 10px; background: #e8dece; border-radius: 5px; margin-top: 16px; overflow: hidden; }
+  .result-bar-fill { height: 100%; background: linear-gradient(90deg,#b5855a,#d4a76a); border-radius: 5px; }
+
+  #wrong-list { text-align: left; margin-bottom: 20px; }
+  .wrong-item { background: #fdf4f4; border: 1.5px solid #f0c8c8; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+  .wrong-item-num { font-size: 12px; color: #b5855a; font-weight: 700; margin-bottom: 4px; }
+  .wrong-item-q { font-size: 13.5px; color: #3a2a14; line-height: 1.6; margin-bottom: 8px; }
+  .wrong-item-yours { font-size: 13px; color: #c0392b; }
+  .wrong-item-ans   { font-size: 13px; color: #27ae60; }
+
+  @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  .fade-in { animation: fadeIn 0.35s ease; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div class="header-eyebrow">Bộ câu hỏi thi</div>
+    <h1>Tin Mừng theo Thánh Mát-thêu</h1>
+    <p>Kiến thức tổng hợp · Câu 151–180</p>
+  </div>
+  <div class="card" id="main-card"></div>
+</div>
+
+<script>
+const LABELS = ["A","B","C","D"];
+
+const questions = [
+  {id:151,q:"\"Tôi nộp ông ấy cho quý vị, thì quý vị muốn cho tôi bao nhiêu?\" Ai đã nói câu này? (x. Mt 26,14-15)",opts:["Thầy Thượng Tế","Giu-đa Ít-ca-ri-ốt","Các kinh sư","Mấy người Pha-ri-sêu"],ans:"B"},
+  {id:152,q:"\"Thầy muốn chúng con dọn cho Thầy ăn lễ Vượt Qua ở đâu?\" Ai đã nói câu này? (x. Mt 26,17)",opts:["Các kinh sư","Si-mon Phê-rô","Mấy người Pha-ri-sêu","Các môn đệ"],ans:"D"},
+  {id:153,q:"\"Ráp-bi, chẳng lẽ con sao?\" Ai đã hỏi Đức Giê-su câu này? (x. Mt 26,25)",opts:["Giu-đa Ít-ca-ri-ốt","Si-mon Phê-rô","Tất cả Nhóm Mười Hai","Các môn đệ"],ans:"A"},
+  {id:154,q:"Trong sự kiện \"Đức Giê-su tiên báo ông Phê-rô sẽ chối Thầy\", hát Thánh Vịnh xong, Đức Giê-su và các môn đệ đã đi đâu? (x. Mt 26,30)",opts:["Đền thờ","Hội đường","Núi Ô-liu","Suối Kít-rôn"],ans:"C"},
+  {id:155,q:"\"Dầu tất cả có vấp ngã vì Thầy đi nữa, thì con đây cũng chẳng bao giờ vấp ngã.\" Ai đã nói câu này? (x. Mt 26,33)",opts:["Các môn đệ","Ông Phê-rô","Giu-đa Ít-ca-ri-ốt","Phi-líp-phê"],ans:"B"},
+  {id:156,q:"Khi Đức Giê-su cầu nguyện tại vườn Ghết-sê-ma-ni, Ngài đã đưa những ai đi theo mình? (x. Mt 26,36-37)",opts:["Ông Phê-rô","Hai người con ông Dê-bê-đê","Ông Phê-rô, An-rê và Gio-an","Cả A và B"],ans:"D"},
+  {id:157,q:"\"Thế ra anh em không thể canh thức nổi với Thầy một giờ sao?\" Đức Giê-su đã nói những lời này với ai? (x. Mt 26,40)",opts:["Các môn đệ","Hai người con ông Dê-bê-đê","Ông Phê-rô","Ông Phê-rô, An-rê và Gio-an"],ans:"C"},
+  {id:158,q:"\"Lạy Cha, nếu con cứ phải uống chén này mà không sao tránh khỏi, thì xin vâng ý Cha.\" Đây là lời cầu nguyện lần thứ mấy? (x. Mt 26,42)",opts:["Lần thứ 1","Lần thứ 2","Lần thứ 3","Tất cả đều đúng"],ans:"B"},
+  {id:159,q:"Sau khi cầu nguyện lần thứ hai, Đức Giê-su trở lại, thấy các môn đệ vẫn đang ngủ, vì mắt họ nặng trĩu. Người đã làm gì? (x. Mt 26,43-44)",opts:["Người nổi giận với các ông","Người để mặc các ông","Người đánh thức các ông","Người ngồi xuống bên các ông"],ans:"B"},
+  {id:160,q:"Cùng đi với Giu-đa Ít-ca-ri-ốt, có cả một đám người đông đảo mang gươm giáo gậy gộc. Họ đã được ai sai đến? (x. Mt 26,47)",opts:["Các thượng tế","Các kỳ mục","Tổng trấn Phi-la-tô","Cả A và B"],ans:"D"},
+  {id:161,q:"\"Này bạn, bạn đến đây làm gì thì cứ làm đi!\" Đức Giê-su nói lời này với ai? (x. Mt 26,49-50)",opts:["Viên sĩ quan cận vệ","Đám lính","Đám thuộc hạ","Giu-đa Ít-ca-ri-ốt"],ans:"D"},
+  {id:162,q:"\"Tôi là một tên cướp sao mà các ông đem gươm giáo gậy gộc đến bắt?\" Đức Giê-su đã nói lời này với ai? (x. Mt 26,55)",opts:["Giu-đa cùng đám thuộc hạ","Đám lính","Đám thuộc hạ","Đám đông"],ans:"D"},
+  {id:163,q:"Ngay sau khi Đức Giê-su bị bắt, họ đã điệu Người đến đâu? (x. Mt 26,57)",opts:["Dinh Phi-la-tô","Thượng tế Cai-pha","Dinh vua Hê-rô-đê","Đền thờ Giê-ru-sa-lem"],ans:"B"},
+  {id:164,q:"\"Ông không nói lại được một lời sao? Mấy người này tố cáo ông gì đó?\" Ai đã hỏi Đức Giê-su câu này? (x. Mt 26,62)",opts:["Tổng trấn Phi-la-tô","Vị thượng tế","Vua Hê-rô-đê","Các thủ lãnh Do-thái"],ans:"B"},
+  {id:165,q:"\"Nhân danh Thiên Chúa hằng sống, tôi truyền cho ông phải nói cho chúng tôi biết: ông có phải là Đấng Ki-tô Con Thiên Chúa không?\" Ai đã hỏi Đức Giê-su câu này? (x. Mt 26,63)",opts:["Vị thượng tế","Các thủ lãnh Do-thái","Vua Hê-rô-đê","Tổng trấn Phi-la-tô"],ans:"A"},
+  {id:166,q:"\"Chính ngài vừa nói. Hơn nữa, tôi nói cho các ông hay: từ nay, các ông sẽ thấy Con Người ngự bên hữu Đấng Toàn Năng và ngự giá mây trời mà đến.\" Đức Giê-su nói câu này với ai? (x. Mt 26,64)",opts:["Vua Hê-rô-đê","Các thủ lãnh Do-thái","Tổng trấn Phi-la-tô","Vị thượng tế"],ans:"D"},
+  {id:167,q:"\"Hắn nói phạm thượng! Chúng ta cần gì nhân chứng nữa? Đấy, quý vị vừa nghe hắn nói phạm đến Thiên Chúa, quý vị nghĩ sao?\" Ai đã nói câu này? (x. Mt 26,65-66)",opts:["Đám đông dân chúng","Vị thượng tế","Tổng trấn Phi-la-tô","Các thủ lãnh Do-thái"],ans:"B"},
+  {id:168,q:"\"Cả bác nữa, bác cũng đã ở với ông Giê-su, người Ga-li-lê đó chứ gì?\" Ai đã nói với ông Phê-rô những lời này? (x. Mt 26,69)",opts:["Một người trong đám đông","Người đầy tớ gái","Những người đứng đó","Tên lính gác cổng"],ans:"B"},
+  {id:169,q:"\"Đúng là bác cũng thuộc bọn họ. Cứ nghe giọng nói của bác là biết ngay.\" Ai đã nói với ông Phê-rô những lời này? (x. Mt 26,73)",opts:["Một người trong đám đông","Người đầy tớ gái","Những người đứng đó","Tên lính gác cổng"],ans:"C"},
+  {id:170,q:"\"Tôi đã phạm tội nộp người vô tội, khiến Người phải chết oan.\" Ai đã nói lời này? (x. Mt 27,3-4)",opts:["Phi-la-tô","Giu-đa Ít-ca-ri-ốt","Vợ của Phi-la-tô","Hê-rô-đê"],ans:"B"},
+  {id:171,q:"\"Họ đã lượm lấy ba mươi đồng bạc, tức là cái giá mà một số con cái Ít-ra-en đã đặt khi đánh giá Người. Và họ lấy số bạc đó mà mua 'Thửa Ruộng Ông Thợ Gốm'.\" Ngôn sứ nào đã nói câu này? (x. Mt 27,9-10)",opts:["I-sai-a","Ê-dê-ki-en","Giê-rê-mi-a","Đa-ni-en"],ans:"C"},
+  {id:172,q:"\"Ông là vua dân Do-thái sao?\" Ai đã hỏi Đức Giê-su câu này? (x. Mt 27,11)",opts:["Tổng trấn Phi-la-tô","Thượng tế Cai-pha","Vua Hê-rô-đê","Các kỳ lão"],ans:"A"},
+  {id:173,q:"\"Ông không nghe bao nhiêu điều họ làm chứng chống lại ông đó sao?\" Ai đã hỏi Đức Giê-su câu này? (x. Mt 27,11)",opts:["Thượng tế Cai-pha","Các kỳ lão","Vua Hê-rô-đê","Tổng trấn Phi-la-tô"],ans:"D"},
+  {id:174,q:"\"Ta vô can trong vụ đổ máu người này. Mặc các người liệu lấy!\" Trước khi nói những lời này, tổng trấn Phi-la-tô đã làm gì? (x. Mt 27,24)",opts:["Bỏ vào nhà","Truyền đánh đòn Đức Giê-su","Lấy nước rửa tay","Phóng thích Ba-ra-ba"],ans:"C"},
+  {id:175,q:"\"Chúng lột áo Người ra, khoác cho Người một tấm áo choàng đỏ, rồi kết một vòng gai làm vương miện đặt lên đầu Người, và trao vào tay mặt Người một cây sậy.\" Ai đã làm điều này? (x. Mt 27,27-29)",opts:["Lính của các thượng tế","Lính của tổng trấn","Lính của Hê-rô-đê","Các kinh sư và Pha-ri-sêu"],ans:"B"},
+  {id:176,q:"\"Rồi chúng khạc nhổ vào Người và lấy cây sậy mà đập vào đầu Người... rồi điệu Người đi đóng đinh vào thập giá.\" Ai đã làm điều này? (x. Mt 27,27-31)",opts:["Lính của các thượng tế","Các kinh sư và Pha-ri-sêu","Lính của tổng trấn","Lính của Hê-rô-đê"],ans:"C"},
+  {id:177,q:"\"Mi là kẻ phá được Đền Thờ, và nội trong ba ngày xây lại được, hãy cứu lấy mình đi! Nếu mi là Con Thiên Chúa, thì xuống khỏi thập giá xem nào!\" Ai đã nói những lời này? (x. Mt 27,39-40)",opts:["Các thượng tế và kinh sư","Kẻ qua người lại","Các kỳ mục","Cả A và C"],ans:"B"},
+  {id:178,q:"\"Hắn cứu được thiên hạ, mà chẳng cứu nổi mình. Hắn là vua Ít-ra-en! Hắn cứ xuống khỏi thập giá ngay bây giờ đi, chúng ta tin hắn liền!\" Ai đã chế giễu Đức Giê-su như vậy? (x. Mt 27,41-42)",opts:["Thượng tế","Kinh sư","Kỳ mục","Cả A, B và C"],ans:"D"},
+  {id:179,q:"\"Hắn cậy vào Thiên Chúa, thì bây giờ Người cứu hắn đi, nếu quả thật Người thương hắn! Vì hắn đã nói: Ta là Con Thiên Chúa!\" Ai đã chế giễu Đức Giê-su như vậy? (x. Mt 27,41-43)",opts:["Thượng tế","Kinh sư","Kỳ mục","Cả A, B và C"],ans:"D"},
+  {id:180,q:"\"Này các bà, các bà đừng sợ! Tôi biết các bà tìm Đức Giê-su, Đấng bị đóng đinh. Người không có ở đây, vì Người đã trỗi dậy như Người đã nói.\" Ai đã nói câu này? (x. Mt 28,5-6)",opts:["Thiên thần","Người làm vườn","Đức Giê-su phục sinh","Viên đại đội trưởng"],ans:"A"},
+];
+
+let current=0, selected=null, revealed=false, answers=[], done=false, showWrong=false;
+const card = document.getElementById('main-card');
+
+function render(){ done ? renderResult() : renderQuiz(); }
+
+function renderQuiz(){
+  const q=questions[current];
+  const pct=Math.round((current/questions.length)*100);
+  const optsHTML=q.opts.map((opt,i)=>{
+    const label=LABELS[i];
+    let cls='opt-btn', icon='';
+    if(revealed){
+      if(label===q.ans){cls+=' correct';icon='<span class="opt-icon">✓</span>';}
+      else if(label===selected){cls+=' wrong';icon='<span class="opt-icon">✗</span>';}
+    } else if(label===selected){ cls+=' selected-pending'; }
+    return `<button class="${cls}" ${revealed?'disabled':''} onclick="handleAnswer('${label}')">
+      <span class="opt-label">${label}</span><span>${esc(opt)}</span>${icon}
+    </button>`;
+  }).join('');
+
+  const feedHTML=revealed?`<div class="feedback">
+    <span class="feedback-badge ${selected===q.ans?'ok':'err'}">${selected===q.ans?'✓ Chính xác!':'✗ Đáp án đúng: '+q.ans}</span>
+    <button class="btn-primary" onclick="handleNext()">${current+1<questions.length?'Câu tiếp theo →':'Xem kết quả'}</button>
+  </div>`:'';
+
+  card.innerHTML=`<div class="fade-in">
+    <div class="progress-meta"><span>Câu ${q.id} &nbsp;(${current+1}/${questions.length})</span><span>${pct}%</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="question-box">
+      <div class="question-eyebrow">Câu hỏi ${q.id}</div>
+      <p class="question-text">${esc(q.q)}</p>
+    </div>
+    <div class="options">${optsHTML}</div>
+    ${feedHTML}
+  </div>`;
+}
+
+function renderResult(){
+  const score=answers.filter(a=>a.selected===a.ans).length;
+  const pct=Math.round((score/questions.length)*100);
+  const wrong=answers.filter(a=>a.selected!==a.ans);
+  let medal='🥉',msg='Cần cố gắng thêm!',msgColor='#c0392b';
+  if(pct>=90){medal='🏆';msg='Xuất sắc!';msgColor='#c9860c';}
+  else if(pct>=70){medal='🥇';msg='Làm tốt lắm!';msgColor='#27ae60';}
+  else if(pct>=50){medal='🥈';msg='Khá tốt!';msgColor='#2980b9';}
+
+  const wBtn=wrong.length>0?`<button class="btn-outline" onclick="toggleWrong()">${showWrong?'Ẩn câu sai':'Xem '+wrong.length+' câu sai'}</button>`:'';
+  const wList=showWrong?`<div id="wrong-list">`+wrong.map(w=>{
+    const yi=LABELS.indexOf(w.selected),ai=LABELS.indexOf(w.ans);
+    return `<div class="wrong-item">
+      <div class="wrong-item-num">Câu ${w.id}</div>
+      <p class="wrong-item-q">${esc(w.q)}</p>
+      <div class="wrong-item-yours">Bạn chọn: <b>${w.selected}</b> — ${esc(w.opts[yi])}</div>
+      <div class="wrong-item-ans">Đáp án: <b>${w.ans}</b> — ${esc(w.opts[ai])}</div>
+    </div>`;
+  }).join('')+`</div>`:'';
+
+  card.innerHTML=`<div class="result fade-in">
+    <div class="result-medal">${medal}</div>
+    <h2>Kết quả</h2>
+    <p class="result-msg" style="color:${msgColor}">${msg}</p>
+    <div class="result-score-box">
+      <div><span class="result-number">${score}</span><span class="result-total">/${questions.length}</span></div>
+      <div class="result-label">Trả lời đúng — ${pct}%</div>
+      <div class="result-bar-track"><div class="result-bar-fill" style="width:${pct}%"></div></div>
+    </div>
+    ${wBtn}${wList}
+    <button class="btn-restart" onclick="handleRestart()">Làm lại từ đầu</button>
+  </div>`;
+}
+
+function handleAnswer(label){ if(revealed)return; selected=label; revealed=true; render(); }
+function handleNext(){
+  const q=questions[current];
+  answers.push({id:q.id,q:q.q,opts:q.opts,ans:q.ans,selected});
+  if(current+1>=questions.length){ done=true; }
+  else{ current++; selected=null; revealed=false; }
+  render();
+}
+function handleRestart(){ current=0;selected=null;revealed=false;answers=[];done=false;showWrong=false;render(); }
+function toggleWrong(){ showWrong=!showWrong; renderResult(); }
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+render();
+</script>
+</body>
+</html>
