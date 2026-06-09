@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tin Mừng theo Thánh Mát-thêu – Câu 101-150</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: linear-gradient(160deg,#fdf6ec 0%,#f0e0c0 100%);
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 32px 16px 48px;
+    font-family: 'Segoe UI','Helvetica Neue',Arial,sans-serif;
+  }
+  #app { width: 100%; max-width: 640px; }
+  .header { text-align: center; margin-bottom: 28px; }
+  .header-eyebrow { font-size: 13px; letter-spacing: 3px; color: #b5855a; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
+  .header h1 { font-size: 24px; font-weight: 800; color: #3a2a14; line-height: 1.3; }
+  .header p { font-size: 13.5px; color: #9a7a50; margin-top: 6px; }
+  .card { background: #fff; border-radius: 18px; padding: 28px 28px 24px; box-shadow: 0 8px 40px rgba(140,90,30,0.10), 0 2px 8px rgba(140,90,30,0.06); }
+
+  .progress-meta { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; color: #7a6a55; }
+  .progress-track { height: 7px; background: #e8dece; border-radius: 4px; overflow: hidden; margin-bottom: 20px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg,#b5855a,#d4a76a); border-radius: 4px; transition: width 0.4s ease; }
+
+  .question-box { background: linear-gradient(135deg,#fdf6ec 0%,#f9eedc 100%); border: 1.5px solid #e2c99a; border-radius: 14px; padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(160,110,50,0.08); }
+  .question-eyebrow { font-size: 11px; letter-spacing: 2px; color: #b5855a; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+  .question-text { font-size: 15.5px; line-height: 1.7; color: #3a2a14; font-weight: 500; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt-btn {
+    display: flex; align-items: center; gap: 14px;
+    padding: 13px 18px; background: #fff;
+    border: 1.5px solid #ddd; border-radius: 10px;
+    cursor: pointer; color: #3a2a14;
+    font-family: inherit; font-size: 14.5px; line-height: 1.5;
+    text-align: left; transition: all 0.18s ease; width: 100%;
+  }
+  .opt-btn:hover:not(:disabled) { background: #fdf0dc; }
+  .opt-btn:disabled { cursor: default; }
+  .opt-btn.correct { background: #eaf7ec; border: 2px solid #4caf7d; color: #1a6b3a; }
+  .opt-btn.wrong   { background: #fdecea; border: 2px solid #e06060; color: #8b1c1c; }
+  .opt-btn.selected-pending { background: #fef3e2; border: 2px solid #d4a76a; color: #7a4a10; }
+
+  .opt-label {
+    min-width: 30px; height: 30px; border-radius: 50%;
+    background: #f0e8d8; color: #9a7a50;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; flex-shrink: 0; transition: all 0.18s;
+  }
+  .opt-btn.correct   .opt-label { background: #4caf7d; color: #fff; }
+  .opt-btn.wrong     .opt-label { background: #e06060; color: #fff; }
+  .opt-btn.selected-pending .opt-label { background: #d4a76a; color: #fff; }
+  .opt-icon { margin-left: auto; font-size: 18px; }
+
+  .feedback { margin-top: 20px; text-align: right; animation: fadeIn 0.25s ease; }
+  .feedback-badge { display: inline-block; padding: 7px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 600; margin-bottom: 12px; margin-right: 8px; }
+  .feedback-badge.ok  { background: #eaf7ec; color: #1a6b3a; }
+  .feedback-badge.err { background: #fdecea; color: #8b1c1c; }
+
+  .btn-primary { background: linear-gradient(135deg,#c8944a,#d4a76a); color: #fff; border: none; padding: 11px 28px; border-radius: 9px; cursor: pointer; font-family: inherit; font-size: 15px; font-weight: 700; box-shadow: 0 3px 12px rgba(180,120,50,0.22); transition: opacity 0.15s; }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-outline { background: none; border: 1.5px solid #d4a76a; color: #b5855a; padding: 9px 20px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 600; margin-bottom: 16px; transition: background 0.15s; }
+  .btn-outline:hover { background: #fdf0dc; }
+  .btn-restart { background: linear-gradient(135deg,#c8944a,#d4a76a); color: #fff; border: none; padding: 13px 36px; border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 16px; font-weight: 700; box-shadow: 0 4px 16px rgba(180,120,50,0.25); }
+
+  .result { text-align: center; }
+  .result-medal { font-size: 64px; margin-bottom: 12px; }
+  .result h2 { font-size: 26px; color: #3a2a14; margin-bottom: 6px; }
+  .result-msg { font-size: 17px; font-weight: 700; margin-bottom: 20px; }
+  .result-score-box { background: linear-gradient(135deg,#fdf6ec,#f5e8cc); border: 1.5px solid #e2c99a; border-radius: 16px; padding: 28px 24px; margin-bottom: 24px; box-shadow: 0 2px 14px rgba(160,110,50,0.1); }
+  .result-number { font-size: 52px; font-weight: 800; color: #b5855a; }
+  .result-total { font-size: 22px; color: #9a7a50; }
+  .result-label { font-size: 15px; color: #7a6a55; margin-top: 4px; }
+  .result-bar-track { height: 10px; background: #e8dece; border-radius: 5px; margin-top: 16px; overflow: hidden; }
+  .result-bar-fill { height: 100%; background: linear-gradient(90deg,#b5855a,#d4a76a); border-radius: 5px; }
+
+  #wrong-list { text-align: left; margin-bottom: 20px; }
+  .wrong-item { background: #fdf4f4; border: 1.5px solid #f0c8c8; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+  .wrong-item-num { font-size: 12px; color: #b5855a; font-weight: 700; margin-bottom: 4px; }
+  .wrong-item-q { font-size: 13.5px; color: #3a2a14; line-height: 1.6; margin-bottom: 8px; }
+  .wrong-item-yours { font-size: 13px; color: #c0392b; }
+  .wrong-item-ans   { font-size: 13px; color: #27ae60; }
+
+  @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  .fade-in { animation: fadeIn 0.35s ease; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div class="header-eyebrow">Bộ câu hỏi thi</div>
+    <h1>Tin Mừng theo Thánh Mát-thêu</h1>
+    <p>Kiến thức tổng hợp · Câu 101–150</p>
+  </div>
+  <div class="card" id="main-card"></div>
+</div>
+
+<script>
+const LABELS = ["A","B","C","D"];
+
+const questions = [
+  {id:101,q:"Khi giải nghĩa Dụ ngôn cỏ lùng, Đức Giê-su ví thợ gặt với ai? (x. Mt 13,39)",opts:["Chúa Thánh Thần","Các thiên thần","Các môn đệ","Các Tông đồ"],ans:"B"},
+  {id:102,q:"\"Ngôn sứ có bị rẻ rúng, thì cũng chỉ là ở chính quê hương mình và trong gia đình mình mà thôi.\" Ai đã nói câu này? (x. Mt 13,57)",opts:["I-sai-a","Mấy người Pha-ri-sêu","Đức Giê-su","Các kinh sư"],ans:"C"},
+  {id:103,q:"Khi về thăm Na-da-rét, tại sao Đức Giê-su lại không làm nhiều phép lạ tại đó?",opts:["Vì họ nhất tề bịt tai lại","Vì họ không tin","Vì họ phản đối","Vì họ đồng loạt bỏ đi"],ans:"B"},
+  {id:104,q:"\"Đó chính là ông Gio-an Tẩy Giả; ông đã từ cõi chết trỗi dậy, nên mới có quyền năng làm phép lạ.\" Ai đã nói câu này? (x. Mt 14,1-2)",opts:["Đức Giê-su","Tiểu vương Hê-rô-đê","Phi-la-tô","Thượng tế Cai-pha"],ans:"B"},
+  {id:105,q:"\"Nơi đây hoang vắng, và đã muộn rồi, vậy xin Thầy cho dân chúng về, để họ vào các làng mạc mua lấy thức ăn.\" Ai đã nói câu này? (x. Mt 14,15)",opts:["Phi-líp-phê","Phê-rô và Gio-an","Các môn đệ","Cả A và B"],ans:"C"},
+  {id:106,q:"\"Họ không cần phải đi đâu cả, chính anh em hãy cho họ ăn.\" Ai đã nói câu này? (x. Mt 14,16)",opts:["Các môn đệ","Đức Giê-su","Si-môn Phê-rô","Phi-líp-phê"],ans:"B"},
+  {id:107,q:"Trong phép lạ Đức Giê-su hóa bánh ra nhiều lần thứ nhất, những mẩu bánh còn thừa, người ta thu lại được bao nhiêu giỏ đầy? (x. Mt 14,20)",opts:["7 giỏ","5 giỏ","12 giỏ","4 giỏ"],ans:"C"},
+  {id:108,q:"\"Thưa Ngài, nếu quả là Ngài, thì xin truyền cho con đi trên mặt nước mà đến với Ngài.\" Ai đã nói câu này? (x. Mt 14,28)",opts:["Ông Tô-ma","Ông Phê-rô","Ông Gia-cô-bê","Người môn đệ Chúa yêu"],ans:"B"},
+  {id:109,q:"\"Người đâu mà kém tin vậy! Sao lại hoài nghi?\" Đức Giê-su nói lời này với ai? (x. Mt 14,28-31)",opts:["Ông Tô-ma","Ông Gia-cô-bê","Ông Gio-an","Ông Phê-rô"],ans:"D"},
+  {id:110,q:"\"Dân này tôn kính Ta bằng môi bằng miệng, còn lòng chúng thì lại xa Ta. Chúng có thờ phượng Ta thì cũng vô ích, vì giáo lý chúng giảng dạy chỉ là giới luật phàm nhân.\" Ngôn sứ nào đã nói câu này? (x. Mt 15,7-9)",opts:["Giê-rê-mi-a","I-sai-a","Da-ca-ri-a","Mi-kha"],ans:"B"},
+  {id:111,q:"\"Lạy Ngài là Con vua Đa-vít, xin rủ lòng thương tôi!\" Ai đã nói câu này? (x. Mt 15,21-22)",opts:["Người đàn bà Ca-na-an","Anh mù Ba-ti-mê","Người bị bại tay","Người đàn bà bị băng huyết"],ans:"A"},
+  {id:112,q:"\"Các môn đệ lại gần xin với Người rằng: 'Xin Thầy bảo bà ấy về đi, vì bà ấy cứ theo sau chúng ta mà kêu mãi!'\" Các môn đệ nói về ai? (x. Mt 15,21-23)",opts:["Người đàn bà bị băng huyết","Người đàn bà góa","Người đàn bà Ca-na-an","Người đàn bà bị còng lưng"],ans:"C"},
+  {id:113,q:"\"Lạy Ngài, xin cứu giúp tôi!\" Ai đã nói câu này? (x. Mt 15,21-25)",opts:["Người đàn bà bị băng huyết","Anh mù Ba-ti-mê","Người bị bại tay","Người đàn bà Ca-na-an"],ans:"D"},
+  {id:114,q:"\"Này bà, lòng tin của bà mạnh thật. Bà muốn sao thì sẽ được vậy.\" Đức Giê-su nói lời này với ai? (x. Mt 15,21-28)",opts:["Người đàn bà bị băng huyết","Người đàn bà góa","Người đàn bà Ca-na-an","Người đàn bà bị còng lưng"],ans:"C"},
+  {id:115,q:"Sau khi hóa bánh ra nhiều lần thứ hai, Đức Giê-su đã lên thuyền đi đến miền nào? (x. Mt 15,39)",opts:["Xê-xa-rê Phi-líp-phê","Ma-ga-đan","Miền Thập tỉnh","Ca-phác-na-um"],ans:"B"},
+  {id:116,q:"\"Cảnh sắc bầu trời thì các ông biết cắt nghĩa, còn thời điềm thì các ông lại không cắt nghĩa nổi\". Đức Giê-su đã nói lời này với ai? (x. Mt 16,1-3)",opts:["Những người Pha-ri-sêu","Nhóm Xa-đốc","Mấy kinh sư","Cả A và B"],ans:"D"},
+  {id:117,q:"\"Thầy là Đấng Ki-tô, Con Thiên Chúa hằng sống.\" Ông Phê-rô tuyên xưng những lời này ở đâu? (x. Mt 16,13-16)",opts:["Xê-da-rê Phi-líp-phê","Ca-phác-na-um","Bết-sai-đa","Vùng bên kia sông Gio-đan"],ans:"A"},
+  {id:118,q:"\"Còn Thầy, Thầy bảo cho anh biết: anh là Phê-rô, nghĩa là Tảng Đá, trên tảng đá này, Thầy sẽ xây Hội Thánh của Thầy, và quyền lực tử thần sẽ không thắng nổi\". Đức Giê-su đã nói những lời này với Phê-rô ở đâu? (x. Mt 16,13-18)",opts:["Vùng bên kia sông Gio-đan","Ca-phác-na-um","Bết-sai-đa","Xê-da-rê Phi-líp-phê"],ans:"D"},
+  {id:119,q:"\"Xa-tan, lui lại đằng sau Thầy! Anh cản lối Thầy, vì tư tưởng của anh không phải là tư tưởng của Thiên Chúa, mà là của loài người.\" Đức Giê-su nói lời này với ai? (x. Mt 16,23)",opts:["Tô-ma","Giu-đa Ít-ca-ri-ốt","Phê-rô","Phi-líp-phê"],ans:"C"},
+  {id:120,q:"Trong sự kiện hiển dung, Đức Giê-su đã mang những ai đi theo mình? (x. Mt 17,1)",opts:["Phê-rô, Gia-cô-bê và An-rê","Phê-rô, Gia-cô-bê và Gio-an","Phê-rô, Gio-an và An-rê","Phê-rô, An-rê và Ta-đê-ô"],ans:"B"},
+  {id:121,q:"Trong sự kiện Đức Giê-su hiển dung, những nhân vật nào đã hiện ra đàm đạo với Người? (x. Mt 17,3)",opts:["Hô-sê và Ê-li-a","Hô-sê và Ê-li-sa","Mô-sê và Ê-li-sa","Mô-sê và Ê-li-a"],ans:"D"},
+  {id:122,q:"\"Lạy Ngài, chúng con ở đây, thật là hay! Nếu Ngài muốn, con xin dựng tại đây ba cái lều, một cho Ngài, một cho ông Mô-sê, và một cho ông Ê-li-a\". Ai đã nói câu này? (x. Mt 17,4)",opts:["Gia-cô-bê","Phê-rô","Gio-an","Các môn đệ"],ans:"B"},
+  {id:123,q:"Về bài học \"Anh em tha thứ cho nhau\", Đức Giê-su dạy phải tha đến mấy lần? (x. Mt 18,22)",opts:["Bảy mươi bảy lần","Bảy lần bảy","Bảy mươi lần bảy","Mười bảy lần bảy"],ans:"C"},
+  {id:124,q:"\"Thưa Thầy, có được phép rẫy vợ mình vì bất cứ lý do nào không?\" Ai đã hỏi câu này? (x. Mt 19,3)",opts:["Nhóm Xa-đốc","Người Pha-ri-sêu","Mấy kinh sư","Các người Do-thái"],ans:"B"},
+  {id:125,q:"\"Nếu anh muốn nên hoàn thiện, thì hãy đi bán tài sản của anh và đem cho người nghèo... Rồi hãy đến theo tôi.\" Sau khi nghe lời này, người thanh niên đã làm gì? (x. Mt 19,21-22)",opts:["Anh lập tức quay về nhà","Anh đứng dậy đi theo Người","Anh buồn rầu bỏ đi","Anh bỏ mọi sự mà theo Người"],ans:"C"},
+  {id:126,q:"\"Cả các anh nữa, hãy đi vào vườn nho, tôi sẽ trả cho các anh hợp lẽ công bằng.\" Ông chủ nói với nhóm thợ ông gặp vào giờ thứ mấy? (x. Mt 20,3)",opts:["Giờ thứ Ba","Giờ thứ Sáu","Giờ thứ Chín","Giờ thứ Mười một"],ans:"A"},
+  {id:127,q:"\"Sao các anh đứng đây suốt ngày không làm gì hết?\" Ông chủ nói với nhóm thợ ông gặp vào giờ thứ mấy? (x. Mt 20,6)",opts:["Giờ thứ Ba","Giờ thứ Sáu","Giờ thứ Chín","Giờ thứ Mười một"],ans:"D"},
+  {id:128,q:"\"Cả các anh nữa, hãy đi vào vườn nho!\" Ông chủ nói với nhóm thợ ông gặp vào giờ thứ mấy? (x. Mt 20,7)",opts:["Giờ thứ Ba","Giờ thứ Sáu","Giờ thứ Chín","Giờ thứ Mười Một"],ans:"D"},
+  {id:129,q:"\"Mấy người sau chót này chỉ làm có một giờ, thế mà ông lại coi họ ngang hàng với chúng tôi là những người đã phải làm việc nặng nhọc cả ngày, lại còn bị nắng nôi thiêu đốt.\" Ai đã cằn nhằn với gia chủ như thế? (x. Mt 20,10-12)",opts:["Nhóm người làm giờ thứ Sáu","Nhóm người làm giờ thứ Chín","Những người vào làm trước nhất","Nhóm người làm giờ thứ Mười một"],ans:"C"},
+  {id:130,q:"\"Này chúng ta lên Giê-ru-sa-lem, và Con Người sẽ bị nộp cho các thượng tế và kinh sư... ngày thứ ba, Người sẽ trỗi dậy.\" Đây là lời loan báo về cuộc thương khó lần thứ mấy? (Mt 20,17-19)",opts:["Lần thứ Nhất","Lần thứ Hai","Lần thứ Ba","Lần thứ Tư"],ans:"C"},
+  {id:131,q:"\"Lạy Ngài, lạy Con vua Đa-vít, xin rủ lòng thương chúng tôi!\" Ai đã nói câu này? (x. Mt 20,30)",opts:["Anh mù Ba-ti-mê","Hai người mù","Mười người phong cùi","Người ăn xin bên vệ đường"],ans:"B"},
+  {id:132,q:"\"Các anh muốn tôi làm gì cho các anh?\" Đức Giê-su nói lời này với ai? (x. Mt 20,29-32)",opts:["Anh mù Ba-ti-mê","Người ăn xin bên vệ đường","Hai người mù","Mười người phong cùi"],ans:"C"},
+  {id:133,q:"\"Các anh đi vào làng trước mặt kia, và sẽ thấy ngay một con lừa mẹ đang cột sẵn đó, có con lừa con bên cạnh. Các anh cởi dây ra và dắt về cho Thầy\". Đức Giê-su nói lời này với ai? (x. Mt 21,1-2)",opts:["Nhóm Mười Hai","Hai môn đệ","Những người Do-thái","Các tá điền"],ans:"B"},
+  {id:134,q:"Khi các thượng tế và kinh sư thấy những việc lạ lùng Người đã làm và thấy lũ trẻ reo hò trong Đền Thờ: \"Hoan hô Con vua Đa-vít!\", họ đã có thái độ như thế nào? (x. Mt 21,15)",opts:["Họ giận điên lên","Họ xầm xì với nhau","Họ tức tối","Họ la lối inh ỏi"],ans:"C"},
+  {id:135,q:"Sau khi đuổi những người đang mua bán trong Đền Thờ, Đức Giê-su đã đi đâu? (x. Mt 21,17)",opts:["Bê-ta-ni-a","Ca-phác-na-um","Ga-li-lê","Giê-ru-sa-lem"],ans:"A"},
+  {id:136,q:"\"Ông lấy quyền nào mà làm các điều ấy? Ai đã cho ông quyền ấy?\" Ai đã hỏi Đức Giê-su câu này? (x. Mt 21,23)",opts:["Các Thượng tế","Các kỳ mục","Người Pha-ri-sêu","Cả A và B"],ans:"D"},
+  {id:137,q:"\"Vậy, phép rửa của ông Gio-an do đâu mà có? Do Trời hay do người ta?\" Đức Giê-su đã hỏi ai câu này? (x. Mt 21,23-25)",opts:["Các kỳ mục","Các Thượng tế","Người Pha-ri-sêu","Cả A và B"],ans:"D"},
+  {id:138,q:"\"Đứa thừa tự đây rồi! Nào ta giết quách nó đi, và đoạt lấy gia tài nó!\" Ai đã nói câu này? (x. Mt 21,38)",opts:["Các kinh sư","Người Pha-ri-sêu","Bọn tá điền","Đám đông dân chúng"],ans:"C"},
+  {id:139,q:"\"Nhà vua liền nổi cơn thịnh nộ, sai quân đi tru diệt bọn sát nhân ấy và thiêu huỷ thành phố của chúng\". Bọn sát nhân ở đây là ai? (x. Mt 22,1-8)",opts:["Các quan khách","Bọn tá điền","Những người vào làm trước nhất","Người không mặc ý phục lễ cưới"],ans:"A"},
+  {id:140,q:"\"Trói chân tay nó lại, quăng nó ra chỗ tối tăm bên ngoài, ở đó người ta sẽ phải khóc lóc nghiến răng!\" Lời này dành cho ai? (x. Mt 22,11-13)",opts:["Các quan khách","Bọn tá điền","Những người vào làm trước nhất","Người không mặc y phục lễ cưới"],ans:"D"},
+  {id:141,q:"\"Vì kẻ được gọi thì nhiều, mà người được chọn thì ít\". Câu này được nói trong Dụ ngôn nào? (x. Mt 22,1-14)",opts:["Dụ ngôn tá điền sát nhân","Dụ ngôn tiệc cưới","Dụ ngôn thợ làm vườn nho","Tất cả đều sai"],ans:"B"},
+  {id:142,q:"\"Các ông lầm, vì không biết Kinh Thánh, cũng chẳng biết quyền năng Thiên Chúa\". Đức Giê-su nói lời này với ai? (x. Mt 22,23-29)",opts:["Các kinh sư","Nhóm Xa-đốc","Người Pha-ri-sêu","Các thượng tế"],ans:"B"},
+  {id:143,q:"\"Vậy, tất cả những gì họ nói, anh em hãy làm, hãy giữ, còn những việc họ làm, thì đừng có làm theo, vì họ nói mà không làm\". Đức Giê-su đang nói về ai? (x. Mt 23,2-3)",opts:["Các kinh sư","Nhóm Xa-đốc","Người Pha-ri-sêu","Cả A và C"],ans:"D"},
+  {id:144,q:"\"Đã bao lần Ta muốn tập hợp con cái ngươi lại, như gà mẹ tập hợp gà con dưới cánh, mà các ngươi không chịu\". Đức Giê-su nói về nơi nào? (x. Mt 23,37)",opts:["Gô-mô-ra","Giê-ru-sa-lem","Ca-phác-na-um","Xơ-đôm"],ans:"B"},
+  {id:145,q:"\"Anh em nhìn thấy tất cả những cái đó, phải không? Thầy bảo thật anh em: tại đây, sẽ không còn tảng đá nào trên tảng đá nào; tất cả đều sẽ bị phá đổ.\" Đức Giê-su nói về nơi nào? (x. Mt 24,1-2)",opts:["Ca-phác-na-um","Xơ-đôm","Gô-mô-ra","Đền thờ Giê-ru-sa-lem"],ans:"D"},
+  {id:146,q:"Trong \"Dụ ngôn những yến bạc\", người đã lãnh được năm yến đã làm gì? (x. Mt 25,16)",opts:["Gây lời được hai yến khác","Đào lỗ, chôn giấu số bạc của chủ","Gây lời được năm yến khác","Gây lời được mười yến khác"],ans:"C"},
+  {id:147,q:"Trong \"Dụ ngôn những yến bạc\", người đã lãnh được một yến đã làm gì? (x. Mt 25,18)",opts:["Gây lời được một yến khác","Gây lời được năm yến khác","Đào lỗ, chôn giấu số bạc của chủ","Gây lời được hai yến khác"],ans:"C"},
+  {id:148,q:"\"Khá lắm! Hỡi đầy tớ tài giỏi và trung thành! Được giao ít mà anh đã trung thành, thì tôi sẽ giao nhiều cho anh. Hãy vào mà hưởng niềm vui của chủ anh!\" Đây là lời ông chủ nói với ai? (x. Mt 25,21-23)",opts:["Người đã lãnh 5 yến","Người đã lãnh 2 yến","Người đã lãnh 1 yến","Cả A và B"],ans:"D"},
+  {id:149,q:"\"Thưa ông chủ, tôi biết ông là người hà khắc, gặt chỗ không gieo, thu nơi không vãi. Vì thế, tôi đâm sợ, mới đem chôn giấu yến bạc của ông dưới đất. Của ông đây, ông cầm lấy!\" Ai đã nói với ông chủ câu này? (x. Mt 25,24-25)",opts:["Người đã lãnh 5 yến","Người đã lãnh 2 yến","Người đã lãnh 1 yến","Cả A và B"],ans:"C"},
+  {id:150,q:"\"Sao lại phí của như thế? Dầu đó có thể bán được nhiều tiền mà cho người nghèo.\" Ai đã nói câu này? (x. Mt 26,8-9)",opts:["Các môn đệ","Giu-đa Ít-ca-ri-ốt","Các kinh sư","Mấy người Pha-ri-sêu"],ans:"A"},
+];
+
+let current=0, selected=null, revealed=false, answers=[], done=false, showWrong=false;
+const card = document.getElementById('main-card');
+
+function render(){ done ? renderResult() : renderQuiz(); }
+
+function renderQuiz(){
+  const q=questions[current];
+  const pct=Math.round((current/questions.length)*100);
+  const optsHTML=q.opts.map((opt,i)=>{
+    const label=LABELS[i];
+    let cls='opt-btn', icon='';
+    if(revealed){
+      if(label===q.ans){cls+=' correct';icon='<span class="opt-icon">✓</span>';}
+      else if(label===selected){cls+=' wrong';icon='<span class="opt-icon">✗</span>';}
+    } else if(label===selected){ cls+=' selected-pending'; }
+    return `<button class="${cls}" ${revealed?'disabled':''} onclick="handleAnswer('${label}')">
+      <span class="opt-label">${label}</span><span>${esc(opt)}</span>${icon}
+    </button>`;
+  }).join('');
+
+  const feedHTML=revealed?`<div class="feedback">
+    <span class="feedback-badge ${selected===q.ans?'ok':'err'}">${selected===q.ans?'✓ Chính xác!':'✗ Đáp án đúng: '+q.ans}</span>
+    <button class="btn-primary" onclick="handleNext()">${current+1<questions.length?'Câu tiếp theo →':'Xem kết quả'}</button>
+  </div>`:'';
+
+  card.innerHTML=`<div class="fade-in">
+    <div class="progress-meta"><span>Câu ${q.id} &nbsp;(${current+1}/${questions.length})</span><span>${pct}%</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="question-box">
+      <div class="question-eyebrow">Câu hỏi ${q.id}</div>
+      <p class="question-text">${esc(q.q)}</p>
+    </div>
+    <div class="options">${optsHTML}</div>
+    ${feedHTML}
+  </div>`;
+}
+
+function renderResult(){
+  const score=answers.filter(a=>a.selected===a.ans).length;
+  const pct=Math.round((score/questions.length)*100);
+  const wrong=answers.filter(a=>a.selected!==a.ans);
+  let medal='🥉',msg='Cần cố gắng thêm!',msgColor='#c0392b';
+  if(pct>=90){medal='🏆';msg='Xuất sắc!';msgColor='#c9860c';}
+  else if(pct>=70){medal='🥇';msg='Làm tốt lắm!';msgColor='#27ae60';}
+  else if(pct>=50){medal='🥈';msg='Khá tốt!';msgColor='#2980b9';}
+
+  const wBtn=wrong.length>0?`<button class="btn-outline" onclick="toggleWrong()">${showWrong?'Ẩn câu sai':'Xem '+wrong.length+' câu sai'}</button>`:'';
+  const wList=showWrong?`<div id="wrong-list">`+wrong.map(w=>{
+    const yi=LABELS.indexOf(w.selected),ai=LABELS.indexOf(w.ans);
+    return `<div class="wrong-item">
+      <div class="wrong-item-num">Câu ${w.id}</div>
+      <p class="wrong-item-q">${esc(w.q)}</p>
+      <div class="wrong-item-yours">Bạn chọn: <b>${w.selected}</b> — ${esc(w.opts[yi])}</div>
+      <div class="wrong-item-ans">Đáp án: <b>${w.ans}</b> — ${esc(w.opts[ai])}</div>
+    </div>`;
+  }).join('')+`</div>`:'';
+
+  card.innerHTML=`<div class="result fade-in">
+    <div class="result-medal">${medal}</div>
+    <h2>Kết quả</h2>
+    <p class="result-msg" style="color:${msgColor}">${msg}</p>
+    <div class="result-score-box">
+      <div><span class="result-number">${score}</span><span class="result-total">/${questions.length}</span></div>
+      <div class="result-label">Trả lời đúng — ${pct}%</div>
+      <div class="result-bar-track"><div class="result-bar-fill" style="width:${pct}%"></div></div>
+    </div>
+    ${wBtn}${wList}
+    <button class="btn-restart" onclick="handleRestart()">Làm lại từ đầu</button>
+  </div>`;
+}
+
+function handleAnswer(label){ if(revealed)return; selected=label; revealed=true; render(); }
+function handleNext(){
+  const q=questions[current];
+  answers.push({id:q.id,q:q.q,opts:q.opts,ans:q.ans,selected});
+  if(current+1>=questions.length){ done=true; }
+  else{ current++; selected=null; revealed=false; }
+  render();
+}
+function handleRestart(){ current=0;selected=null;revealed=false;answers=[];done=false;showWrong=false;render(); }
+function toggleWrong(){ showWrong=!showWrong; renderResult(); }
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+render();
+</script>
+</body>
+</html>
