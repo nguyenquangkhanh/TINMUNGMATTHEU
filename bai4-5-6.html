@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tin Mừng Mátthêu – Trắc nghiệm Bài 4, 5, 6</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { min-height: 100vh; background: linear-gradient(160deg,#fdf6ec 0%,#f0e0c0 100%); display: flex; align-items: flex-start; justify-content: center; padding: 32px 16px 48px; font-family: 'Segoe UI','Helvetica Neue',Arial,sans-serif; }
+  #app { width: 100%; max-width: 680px; }
+  .header { text-align: center; margin-bottom: 28px; }
+  .header-eyebrow { font-size: 13px; letter-spacing: 3px; color: #b5855a; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
+  .header h1 { font-size: 23px; font-weight: 800; color: #3a2a14; line-height: 1.3; }
+  .header p { font-size: 13.5px; color: #9a7a50; margin-top: 6px; }
+  .card { background: #fff; border-radius: 18px; padding: 28px 28px 24px; box-shadow: 0 8px 40px rgba(140,90,30,0.10), 0 2px 8px rgba(140,90,30,0.06); }
+
+  /* Menu */
+  .menu-item { display: flex; align-items: center; gap: 16px; padding: 18px 20px; background: linear-gradient(135deg,#fdf6ec,#f9eedc); border: 1.5px solid #e2c99a; border-radius: 14px; margin-bottom: 14px; cursor: pointer; transition: all 0.18s; text-align: left; width: 100%; font-family: inherit; }
+  .menu-item:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(160,110,50,0.14); border-color: #d4a76a; }
+  .menu-num { min-width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg,#c8944a,#d4a76a); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px; flex-shrink: 0; }
+  .menu-text { flex: 1; }
+  .menu-title { font-size: 16px; font-weight: 700; color: #3a2a14; margin-bottom: 3px; }
+  .menu-sub { font-size: 12.5px; color: #9a7a50; }
+  .menu-arrow { font-size: 20px; color: #c8944a; }
+
+  /* Progress */
+  .progress-meta { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; color: #7a6a55; }
+  .progress-track { height: 7px; background: #e8dece; border-radius: 4px; overflow: hidden; margin-bottom: 20px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg,#b5855a,#d4a76a); border-radius: 4px; transition: width 0.4s ease; }
+
+  /* Question */
+  .question-box { background: linear-gradient(135deg,#fdf6ec,#f9eedc); border: 1.5px solid #e2c99a; border-radius: 14px; padding: 20px 22px; margin-bottom: 18px; box-shadow: 0 2px 12px rgba(160,110,50,0.08); }
+  .question-eyebrow { font-size: 11px; letter-spacing: 2px; color: #b5855a; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+  .question-text { font-size: 15.5px; line-height: 1.65; color: #3a2a14; font-weight: 600; }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt-btn { display: flex; align-items: flex-start; gap: 13px; padding: 12px 16px; background: #fff; border: 1.5px solid #ddd; border-radius: 10px; cursor: pointer; color: #2a2014; font-family: inherit; font-size: 14px; line-height: 1.5; text-align: left; transition: all 0.18s; width: 100%; }
+  .opt-btn:hover:not(:disabled) { background: #fdf0dc; }
+  .opt-btn:disabled { cursor: default; }
+  .opt-btn.correct { background: #eaf7ec; border: 2px solid #4caf7d; color: #1a6b3a; }
+  .opt-btn.wrong   { background: #fdecea; border: 2px solid #e06060; color: #8b1c1c; }
+  .opt-btn.selected-pending { background: #fef3e2; border: 2px solid #d4a76a; color: #7a4a10; }
+  .opt-label { min-width: 28px; height: 28px; border-radius: 50%; background: #f0e8d8; color: #9a7a50; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12.5px; flex-shrink: 0; margin-top: 1px; transition: all 0.18s; }
+  .opt-btn.correct   .opt-label { background: #4caf7d; color: #fff; }
+  .opt-btn.wrong     .opt-label { background: #e06060; color: #fff; }
+  .opt-btn.selected-pending .opt-label { background: #d4a76a; color: #fff; }
+  .opt-icon { margin-left: auto; font-size: 18px; flex-shrink: 0; }
+  .opt-text { flex: 1; }
+
+  /* Feedback */
+  .feedback { margin-top: 18px; text-align: right; animation: fadeIn 0.25s ease; }
+  .feedback-badge { display: inline-block; padding: 7px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 600; margin-bottom: 10px; margin-right: 8px; }
+  .feedback-badge.ok  { background: #eaf7ec; color: #1a6b3a; }
+  .feedback-badge.err { background: #fdecea; color: #8b1c1c; }
+
+  /* Buttons */
+  .btn-primary { background: linear-gradient(135deg,#c8944a,#d4a76a); color: #fff; border: none; padding: 11px 28px; border-radius: 9px; cursor: pointer; font-family: inherit; font-size: 15px; font-weight: 700; box-shadow: 0 3px 12px rgba(180,120,50,0.22); transition: opacity 0.15s; }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-outline { background: none; border: 1.5px solid #d4a76a; color: #b5855a; padding: 9px 20px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 600; margin-bottom: 14px; transition: background 0.15s; }
+  .btn-outline:hover { background: #fdf0dc; }
+  .btn-back { background: none; border: none; color: #b5855a; font-family: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; padding: 0; margin-bottom: 16px; display: inline-block; }
+  .btn-back:hover { text-decoration: underline; }
+
+  /* Result */
+  .result { text-align: center; }
+  .result-medal { font-size: 64px; margin-bottom: 12px; }
+  .result h2 { font-size: 26px; color: #3a2a14; margin-bottom: 6px; }
+  .result-msg { font-size: 17px; font-weight: 700; margin-bottom: 20px; }
+  .result-score-box { background: linear-gradient(135deg,#fdf6ec,#f5e8cc); border: 1.5px solid #e2c99a; border-radius: 16px; padding: 26px 24px; margin-bottom: 20px; box-shadow: 0 2px 14px rgba(160,110,50,0.1); }
+  .result-number { font-size: 52px; font-weight: 800; color: #b5855a; }
+  .result-total { font-size: 22px; color: #9a7a50; }
+  .result-label { font-size: 15px; color: #7a6a55; margin-top: 4px; }
+  .result-bar-track { height: 10px; background: #e8dece; border-radius: 5px; margin-top: 14px; overflow: hidden; }
+  .result-bar-fill { height: 100%; background: linear-gradient(90deg,#b5855a,#d4a76a); border-radius: 5px; }
+  .result-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 4px; }
+  .btn-restart { background: linear-gradient(135deg,#c8944a,#d4a76a); color: #fff; border: none; padding: 12px 28px; border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 15px; font-weight: 700; box-shadow: 0 4px 16px rgba(180,120,50,0.25); }
+  .btn-menu { background: linear-gradient(135deg,#9a7a50,#b5855a); color: #fff; border: none; padding: 12px 28px; border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 15px; font-weight: 700; box-shadow: 0 4px 16px rgba(120,80,30,0.2); }
+
+  /* Wrong list */
+  #wrong-list { text-align: left; margin-bottom: 18px; }
+  .wrong-item { background: #fdf4f4; border: 1.5px solid #f0c8c8; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+  .wrong-item-num { font-size: 12px; color: #b5855a; font-weight: 700; margin-bottom: 4px; }
+  .wrong-item-q { font-size: 13.5px; color: #3a2a14; line-height: 1.55; margin-bottom: 7px; font-weight: 600; }
+  .wrong-item-yours { font-size: 13px; color: #c0392b; line-height: 1.45; margin-bottom: 3px; }
+  .wrong-item-ans   { font-size: 13px; color: #27ae60; line-height: 1.45; }
+
+  @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  .fade-in { animation: fadeIn 0.35s ease; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div class="header-eyebrow">Bộ câu hỏi trắc nghiệm</div>
+    <h1>Tin Mừng theo Thánh Mát-thêu</h1>
+    <p id="subheader">Chọn bài để bắt đầu</p>
+  </div>
+  <div class="card" id="main-card"></div>
+</div>
+
+<script>
+const LABELS = ["A","B","C","D"];
+
+const SETS = {
+  bai4: {
+    title: "Bài 4: Các Nhà Chiêm Tinh & Thời Thơ Ấu",
+    sub: "22 câu hỏi",
+    icon: "4",
+    questions: [
+      {q:"Các nhà chiêm tinh đến từ đâu? (Mt 2,1-23)",opts:["Ai Cập","Phương Đông","Hy Lạp","Syria"],ans:"B"},
+      {q:"Các nhà chiêm tinh đến Giêrusalem để tìm ai?",opts:["Một ngôn sứ","Vua Hêrôđê","Đức Vua dân Do Thái","Một tư tế"],ans:"C"},
+      {q:"Đức Giêsu sinh ra tại đâu?",opts:["Nazareth","Giêrusalem","Bêlem miền Giuđê","Ai Cập"],ans:"C"},
+      {q:"Thời điểm Đức Giêsu sinh ra là khi ai đang làm vua?",opts:["Ác-khê-lao","Hêrôđê","Tibêriô","Đavít"],ans:"B"},
+      {q:"Các thượng tế nói Đấng Kitô sẽ sinh ra tại đâu?",opts:["Nazareth","Galilê","Giêrusalem","Bêlem"],ans:"D"},
+      {q:"Ý nghĩa việc Giêsu sinh tại Bêlem?",opts:["Ứng nghiệm Kinh Thánh","Vì gần Giêrusalem","Vì gia đình Maria ở đó","Vì Hêrôđê chọn"],ans:"A"},
+      {q:"Các nhà chiêm tinh được hướng dẫn bởi điều gì?",opts:["Một thiên thần","Một giấc mộng","Một ngôi sao","Một ngôn sứ"],ans:"C"},
+      {q:"Ba lễ vật các nhà chiêm tinh dâng là gì?",opts:["Vàng – bạc – đá quý","Vàng – nhũ hương – một dược","Hương – dầu – rượu","Bánh – rượu – dầu"],ans:"B"},
+      {q:"Sau khi bái lạy Hài Nhi, các nhà chiêm tinh trở về bằng cách nào?",opts:["Qua Giêrusalem","Qua Samaria","Đi lối khác","Trở lại Ai Cập"],ans:"C"},
+      {q:"Sự trái ngược trong đoạn Tin Mừng Mt 2,1-23 là gì?",opts:["Ngoại đạo tìm Chúa, lãnh đạo Do Thái thờ ơ","Hêrôđê tin Chúa","Thượng tế đi bái lạy","Chiêm tinh bỏ cuộc"],ans:"A"},
+      {q:"Để nhận biết Đức Giêsu, con người cần phải làm gì?",opts:["Tìm kiếm","Biết Kinh Thánh","Khiêm nhường","Từ bỏ và lựa chọn"],ans:"D"},
+      {q:"Qua sự trái ngược trong Mt 2,1-23, ơn cứu độ của Thiên Chúa dành cho tất cả mọi người. Đúng hay sai?",opts:["Đúng","Sai"],ans:"A"},
+      {q:"Thiên thần báo cho Giuse đưa Hài Nhi trốn sang đâu?",opts:["Syria","Ai Cập","Babylon","Galilê"],ans:"B"},
+      {q:"Hêrôđê ra lệnh giết các trẻ em bao nhiêu tuổi trở xuống?",opts:["1 tuổi","2 tuổi","3 tuổi","5 tuổi"],ans:"B"},
+      {q:"Sau khi Hêrôđê chết, Giuse định trở về đâu?",opts:["Nazareth","Ai Cập","Đất Israel","Bêlem"],ans:"C"},
+      {q:"Cuối cùng gia đình Đức Giêsu trở về đâu?",opts:["Bêlem","Giêrusalem","Nazareth","Samaria"],ans:"C"},
+      {q:"Lễ vật \"vàng\" tượng trưng cho điều gì nơi Đức Giêsu?",opts:["Thánh thiện và quyền lực","Khổ nạn và chiến thắng","Khôn ngoan và thánh thiện","Cao quý và vương quyền"],ans:"D"},
+      {q:"Nhũ hương biểu thị điều gì nơi Đức Giêsu?",opts:["Sự đau khổ","Thần tính","Sự nghèo khó","Nhân tính"],ans:"B"},
+      {q:"Một dược tiên báo điều gì sẽ xảy ra nơi Đức Giêsu?",opts:["Sự sinh ra của Chúa","Cuộc khổ nạn và cái chết","Sự phục sinh","Sự lên trời"],ans:"B"},
+      {q:"Ngày nay ta có thể dâng gì thay cho lễ vật?",opts:["Phục vụ, cầu nguyện, hy sinh","Vàng bạc thật","Lễ hội linh đình","Kiến thức khoa học"],ans:"A"},
+      {q:"Sau khi vua Hêrôđê chết, ai lên kế vị ông?",opts:["Phi-la-tô","Au-gut-tô","Ac-khe-lao","Hê-rô-đê cả"],ans:"C"},
+      {q:"Theo thần học của Tin Mừng Mátthêu, chương 2 trình bày Đức Giêsu như:",opts:["Một nhà cải cách","Một ngôn sứ","Vua nhà Đavít hoàn tất lời hứa","Một lãnh đạo tôn giáo"],ans:"C"},
+    ]
+  },
+  bai5: {
+    title: "Bài 5: Gioan Tẩy Giả & Phép Rửa",
+    sub: "22 câu hỏi",
+    icon: "5",
+    questions: [
+      {q:"Sau các trình thuật về thời thơ ấu, Tin Mừng Mátthêu trình bày sứ mạng của ai?",opts:["Đức Giêsu và Gioan","Gioan Tẩy Giả và Đức Giêsu","Phêrô và Phaolô","Các Tông Đồ"],ans:"B"},
+      {q:"Gioan Tẩy Giả rao giảng ở đâu?",opts:["Thành Giêrusalem","Đền Thờ","Hoang địa miền Giuđê","Galilê"],ans:"C"},
+      {q:"Gioan Tẩy Giả rao giảng và kêu gọi người ta làm gì?",opts:["Hãy giữ luật Môsê","Hãy sám hối","Hãy chuẩn bị chiến đấu","Hãy giữ ngày sabát"],ans:"B"},
+      {q:"Gioan Tẩy Giả kêu gọi người ta sám hối vì điều gì?",opts:["Nước Trời đã đến gần","Lề luật Môsê","Thiên Chúa muốn","Nước Trời"],ans:"A"},
+      {q:"Gioan Tẩy Giả mặc gì?",opts:["Áo vải lanh","Áo lông cừu","Áo lông lạc đà","Áo da thú"],ans:"C"},
+      {q:"Thức ăn của Gioan Tẩy Giả là gì?",opts:["Bánh và cá","Châu chấu và mật ong rừng","Lúa mì và nho","Rau rừng"],ans:"B"},
+      {q:"Gioan làm phép rửa cho dân chúng ở đâu?",opts:["Sông Giođan","Hồ Galilê","Biển Chết","Sông Nin"],ans:"A"},
+      {q:"Gioan gọi người Pharisêu và Xađốc là gì?",opts:["Người giả hình","Nòi rắn độc","Người cứng lòng","Người lạc lối"],ans:"B"},
+      {q:"Gioan nói Thiên Chúa có thể làm cho những hòn đá trở nên con cháu của ai?",opts:["Abraham","Isaac","Giacóp","Thiên Chúa"],ans:"A"},
+      {q:"Ai đến xin Gioan làm phép rửa?",opts:["Phêrô","Đức Giêsu","Giacôbê","Môsê"],ans:"B"},
+      {q:"Sau khi Đức Giêsu chịu phép rửa, điều gì xảy ra?",opts:["Trời tối sầm","Các tầng trời mở ra","Đền thờ rung chuyển","Nước sông dâng cao"],ans:"B"},
+      {q:"Động từ \"metanoeite\" trong lời giảng của Gioan nhấn mạnh điều gì?",opts:["Việc cầu nguyện nhiều","Việc giữ luật","Việc ăn chay","Sự thay đổi tận căn"],ans:"D"},
+      {q:"Lời gọi sám hối của Gioan chủ yếu hướng tới điều gì?",opts:["Thay đổi luật lệ xã hội","Quay về với Giao ước","Xây dựng quốc gia","Tăng cường nghi lễ"],ans:"B"},
+      {q:"Gioan gọi người Pharisêu và Xađốc là \"nòi rắn độc\" nhằm mục đích gì?",opts:["Nhục mạ họ","Mỉa mai họ","Vạch trần","Trêu chọc họ"],ans:"C"},
+      {q:"Khi nói \"nòi rắn độc\" có ý nói tới điều gì?",opts:["Khôn ngoan","Xảo trá","Phản nghịch","Cả B & C"],ans:"D"},
+      {q:"Phép rửa của Gioan mang ý nghĩa gì?",opts:["Tha tội","Thanh tẩy hoàn toàn","Giục lòng sám hối","Ban Thánh Thần"],ans:"C"},
+      {q:"Phép rửa của Đấng Mêsia khác với phép rửa của Gioan ở điểm nào?",opts:["Thanh tẩy tội lỗi","Ban trong Thánh Thần và lửa","Chỉ dành cho người công chính","Cả A & B"],ans:"D"},
+      {q:"Tiếng từ trời phán khi Đức Giêsu chịu phép rửa cho thấy điều gì?",opts:["Uy quyền chính trị của Ngài","Căn tính thần linh của Ngài","Sứ mạng ngôn sứ","Sự kết thúc luật Môsê"],ans:"B"},
+      {q:"\"Đây là Con yêu dấu của Ta, Ta hài lòng về Người\" (Mt 3,17). Đúng hay sai?",opts:["Đúng","Sai"],ans:"A"},
+      {q:"Thánh Mátthêu giới thiệu Gioan Tẩy Giả: mặc áo lông lạc đà, thắt lưng bằng dây da, lấy châu chấu và mật ong rừng làm thức ăn. Đúng hay sai?",opts:["Đúng","Sai"],ans:"A"},
+      {q:"Đức Giêsu không bác bỏ phép rửa của Gioan mà đón nhận trong kế hoạch cứu độ. Điều này dạy chúng ta điều gì? (Đúng hay sai?)",opts:["Đúng","Sai"],ans:"A"},
+      {q:"Thần Khí Thiên Chúa đáp xuống và lời \"Đây là Con yêu dấu của Ta\" xác nhận căn tính thần linh của Đức Giêsu là Đấng Mêsia. Đúng hay sai?",opts:["Đúng","Sai"],ans:"A"},
+    ]
+  },
+  bai6: {
+    title: "Bài 6: Cám Dỗ & Kêu Gọi Môn Đệ",
+    sub: "26 câu hỏi",
+    icon: "6",
+    questions: [
+      {q:"Chương 4 Tin Mừng Mátthêu được chia thành bao nhiêu phần?",opts:["2","3","4","5"],ans:"C"},
+      {q:"Sau khi chịu phép rửa, Đức Giêsu được ai dẫn vào hoang địa?",opts:["Các thiên thần","Thần Khí","Gioan Tẩy Giả","Các môn đệ"],ans:"B"},
+      {q:"Đức Giêsu ăn chay trong hoang địa bao lâu?",opts:["40 ngày đêm","30 ngày đêm","20 ngày đêm","50 ngày đêm"],ans:"A"},
+      {q:"Trong cơn cám dỗ thứ nhất, ma quỷ bảo Đức Giêsu làm gì?",opts:["Hóa nước thành rượu","Hóa đá thành bánh","Gọi thiên thần xuống","Chữa bệnh cho dân"],ans:"B"},
+      {q:"Cơn cám dỗ thứ hai xảy ra ở đâu?",opts:["Trên núi cao","Trong hoang địa","Trên nóc Đền Thờ","Bên sông Giođan"],ans:"C"},
+      {q:"Sau khi Đức Giêsu chiến thắng cám dỗ, ai đến hầu hạ Người?",opts:["Các môn đệ","Các sứ thần","Gioan Tẩy Giả","Người Pharisêu"],ans:"B"},
+      {q:"Sau khi nghe tin Gioan bị bắt, Đức Giêsu đi đâu?",opts:["Giêrusalem","Samaria","Belem","Galilê"],ans:"D"},
+      {q:"Đức Giêsu đến ở thành nào tại Galilê?",opts:["Bêlem","Caphácnaum","Nazareth","Giêrikhô"],ans:"B"},
+      {q:"\"Anh em hãy sám hối, vì Nước Trời đã...\"?",opts:["Đến gần","Tới","Đến","Sắp tới"],ans:"A"},
+      {q:"Hai anh em đầu tiên được Đức Giêsu gọi là ai?",opts:["Phêrô và Anrê","Giacôbê và Gioan","Matthêu và Tôma","Philipphê và Batôlômêô"],ans:"A"},
+      {q:"Nghề nghiệp của các tông đồ đầu tiên là gì?",opts:["Nông dân","Đánh cá","Thợ mộc","Thu thuế"],ans:"B"},
+      {q:"Trong chương 4, Đức Giêsu đã giảng dạy, rao giảng và chữa bệnh tại miền nào?",opts:["Bêlem","Caphácnaum","Nazareth","Galilê"],ans:"D"},
+      {q:"\"Anh em hãy sám hối, vì Nước Trời đã đến gần\" là sứ điệp đầu tiên trong lời rao giảng của Đức Giêsu. Đúng hay sai?",opts:["Đúng","Sai"],ans:"A"},
+      {q:"Cám dỗ thứ ba chủ yếu liên quan đến điều gì?",opts:["Quyền lực trần thế","Phép lạ","Sự khôn ngoan","Sự giàu có cá nhân"],ans:"A"},
+      {q:"Việc Đức Giêsu bắt đầu rao giảng tại Galilê ứng nghiệm lời ai?",opts:["Giêrêmia","Isaia","Êdêkien","Amos"],ans:"B"},
+      {q:"Động từ \"metanoeite\" trong lời rao giảng của Đức Giêsu mang ý nghĩa gì?",opts:["Thay đổi bên ngoài","Hãy cầu nguyện","Tuân giữ luật","Hoán cải tận căn và liên lỉ"],ans:"D"},
+      {q:"Hình ảnh \"lưới người như lưới cá\" diễn tả điều gì?",opts:["Nghề mới","Sứ mạng truyền giáo","Công việc đánh cá","Sự giàu có"],ans:"B"},
+      {q:"Việc Đức Giêsu kêu gọi các tông đồ cho thấy điều gì về ơn gọi?",opts:["Do Đức Giêsu chủ động mời gọi","Do con người lựa chọn","Do xã hội quyết định","Do gia đình quyết định"],ans:"A"},
+      {q:"Mt 4,23-25 cho thấy Đức Giêsu là ai trong cả lời rao giảng và hành động?",opts:["Con Thiên Chúa","Đức Kitô","Đấng Mêsia","Cả A, B & C"],ans:"C"},
+      {q:"Qua chương 4, chúng ta được mời gọi trở thành ai trong Năm Thánh (2026)?",opts:["Những môn đệ thừa sai","Ánh sáng trần gian","Thợ gặt lành nghề","Chiến sĩ Phúc Âm"],ans:"A"},
+      {q:"Chương 4 Mátthêu được chia: Mt 4,1-11 (cám dỗ), Mt 4,12-17 (bắt đầu sứ vụ), Mt 4,18-22 (gọi 4 tông đồ), Mt 4,23-25 (tóm lược sứ vụ). Đúng hay sai?",opts:["Đúng","Sai"],ans:"A"},
+      {q:"Ba lần Đức Giêsu thắng cám dỗ, trái ngược Israel thất bại trong sa mạc. Mátthêu giới thiệu Ngài là Israel mới và Con Thiên Chúa. Đúng hay sai?",opts:["Đúng","Sai"],ans:"A"},
+      {q:"Mt 4,5-7 (quỷ đặt Đức Giêsu trên nóc đền thờ và bảo gieo mình xuống) là cơn cám dỗ thứ 3. Đúng hay sai?",opts:["Đúng","Sai"],ans:"B"},
+      {q:"Mt 4,8-11 (quỷ đưa lên núi cao, chỉ các nước và vinh hoa, đòi bái lạy) là cơn cám dỗ thứ 3. Đúng hay sai?",opts:["Đúng","Sai"],ans:"A"},
+      {q:"Câu trả lời của Đức Giêsu trong lần cám dỗ thứ nhất (Mt 4,3-4): \"Người ta sống không chỉ nhờ cơm bánh, nhưng còn nhờ mọi lời miệng Thiên Chúa phán ra\". Đúng hay sai?",opts:["Đúng","Sai"],ans:"A"},
+      {q:"Chương 4 dạy: sám hối – thắng cám dỗ – trở thành môn đệ thừa sai rao giảng tình yêu Thiên Chúa bằng lời nói và việc làm. Đúng hay sai?",opts:["Đúng","Sai"],ans:"A"},
+    ]
+  }
+};
+
+let view="menu", currentSet=null;
+let current=0, selected=null, revealed=false, answers=[], showWrong=false;
+const card = document.getElementById('main-card');
+const subheader = document.getElementById('subheader');
+
+function render(){ view==="menu"?renderMenu():view==="quiz"?renderQuiz():renderResult(); }
+
+function renderMenu(){
+  subheader.textContent="Chọn bài để bắt đầu";
+  card.innerHTML=Object.entries(SETS).map(([key,s])=>`
+    <button class="menu-item" onclick="startQuiz('${key}')">
+      <div class="menu-num">${s.icon}</div>
+      <div class="menu-text">
+        <div class="menu-title">${esc(s.title)}</div>
+        <div class="menu-sub">${s.sub}</div>
+      </div>
+      <div class="menu-arrow">→</div>
+    </button>`).join('');
+}
+
+function startQuiz(key){
+  currentSet=key; current=0; selected=null; revealed=false; answers=[]; showWrong=false; view="quiz";
+  subheader.textContent=SETS[key].title;
+  render();
+}
+
+function renderQuiz(){
+  const s=SETS[currentSet], q=s.questions[current];
+  const pct=Math.round((current/s.questions.length)*100);
+  const optsHTML=q.opts.map((opt,i)=>{
+    const label=LABELS[i]; let cls='opt-btn',icon='';
+    if(revealed){
+      if(label===q.ans){cls+=' correct';icon='<span class="opt-icon">✓</span>';}
+      else if(label===selected){cls+=' wrong';icon='<span class="opt-icon">✗</span>';}
+    } else if(label===selected) cls+=' selected-pending';
+    return `<button class="${cls}" ${revealed?'disabled':''} onclick="handleAnswer('${label}')">
+      <span class="opt-label">${label}</span><span class="opt-text">${esc(opt)}</span>${icon}
+    </button>`;
+  }).join('');
+
+  const feedHTML=revealed?`<div class="feedback">
+    <span class="feedback-badge ${selected===q.ans?'ok':'err'}">${selected===q.ans?'✓ Chính xác!':'✗ Đáp án đúng: '+q.ans}</span>
+    <button class="btn-primary" onclick="handleNext()">${current+1<s.questions.length?'Câu tiếp theo →':'Xem kết quả'}</button>
+  </div>`:'';
+
+  card.innerHTML=`<div class="fade-in">
+    <button class="btn-back" onclick="goMenu()">← Chọn bài khác</button>
+    <div class="progress-meta"><span>Câu ${current+1} / ${s.questions.length}</span><span>${pct}%</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="question-box">
+      <div class="question-eyebrow">Câu hỏi ${current+1}</div>
+      <p class="question-text">${esc(q.q)}</p>
+    </div>
+    <div class="options">${optsHTML}</div>
+    ${feedHTML}
+  </div>`;
+}
+
+function renderResult(){
+  const s=SETS[currentSet];
+  const score=answers.filter(a=>a.selected===a.ans).length;
+  const pct=Math.round((score/s.questions.length)*100);
+  const wrong=answers.filter(a=>a.selected!==a.ans);
+  let medal='🥉',msg='Cần cố gắng thêm!',msgColor='#c0392b';
+  if(pct>=90){medal='🏆';msg='Xuất sắc!';msgColor='#c9860c';}
+  else if(pct>=70){medal='🥇';msg='Làm tốt lắm!';msgColor='#27ae60';}
+  else if(pct>=50){medal='🥈';msg='Khá tốt!';msgColor='#2980b9';}
+
+  const wBtn=wrong.length>0?`<button class="btn-outline" onclick="toggleWrong()">${showWrong?'Ẩn câu sai':'Xem '+wrong.length+' câu sai'}</button>`:'';
+  const wList=showWrong?`<div id="wrong-list">`+wrong.map(w=>{
+    const yi=LABELS.indexOf(w.selected),ai=LABELS.indexOf(w.ans);
+    return `<div class="wrong-item">
+      <div class="wrong-item-num">Câu ${w.idx}</div>
+      <p class="wrong-item-q">${esc(w.q)}</p>
+      <div class="wrong-item-yours">Bạn chọn (${w.selected}): ${esc(w.opts[yi]||'—')}</div>
+      <div class="wrong-item-ans">Đáp án (${w.ans}): ${esc(w.opts[ai])}</div>
+    </div>`;
+  }).join('')+`</div>`:'';
+
+  card.innerHTML=`<div class="result fade-in">
+    <div class="result-medal">${medal}</div>
+    <h2>Kết quả</h2>
+    <p class="result-msg" style="color:${msgColor}">${msg}</p>
+    <div class="result-score-box">
+      <div><span class="result-number">${score}</span><span class="result-total">/${s.questions.length}</span></div>
+      <div class="result-label">Trả lời đúng — ${pct}%</div>
+      <div class="result-bar-track"><div class="result-bar-fill" style="width:${pct}%"></div></div>
+    </div>
+    ${wBtn}${wList}
+    <div class="result-actions">
+      <button class="btn-restart" onclick="startQuiz('${currentSet}')">Làm lại bài này</button>
+      <button class="btn-menu" onclick="goMenu()">Chọn bài khác</button>
+    </div>
+  </div>`;
+}
+
+function goMenu(){ view="menu"; subheader.textContent="Chọn bài để bắt đầu"; render(); }
+function handleAnswer(label){ if(revealed)return; selected=label; revealed=true; render(); }
+function handleNext(){
+  const q=SETS[currentSet].questions[current];
+  answers.push({idx:current+1,q:q.q,opts:q.opts,ans:q.ans,selected});
+  if(current+1>=SETS[currentSet].questions.length){ view="result"; }
+  else{ current++; selected=null; revealed=false; }
+  render();
+}
+function toggleWrong(){ showWrong=!showWrong; renderResult(); }
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+render();
+</script>
+</body>
+</html>
