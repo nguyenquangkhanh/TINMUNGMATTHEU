@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bài 9-10 - Rao Giảng Nước Trời</title>
+<style>
+  :root{
+    --navy:#0a1f44;
+    --navy-2:#12285c;
+    --navy-light:#1e3a75;
+    --gold:#d4af37;
+    --white:#ffffff;
+    --green:#1e7d32;
+    --red:#c62828;
+    --fs:22pt;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', Tahoma, Arial, sans-serif;
+    background:linear-gradient(160deg,var(--navy) 0%,var(--navy-2) 100%);
+    color:var(--white);
+    font-size:var(--fs);
+    padding:30px 20px 80px;
+  }
+  h1{
+    text-align:center;
+    font-size:1.4em;
+    color:var(--gold);
+    margin-bottom:0.1em;
+    letter-spacing:1px;
+  }
+  h2{
+    text-align:center;
+    font-size:1em;
+    color:var(--white);
+    font-weight:normal;
+    margin-top:0;
+    margin-bottom:1em;
+  }
+  #progress{
+    text-align:center;
+    color:var(--gold);
+    font-size:0.6em;
+    margin-bottom:20px;
+  }
+  .card{
+    max-width:900px;
+    margin:0 auto;
+    background:var(--navy-light);
+    border-radius:18px;
+    padding:35px 40px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    border:2px solid var(--gold);
+  }
+  .question{
+    font-size:0.8em;
+    line-height:1.4;
+    margin-bottom:25px;
+    font-weight:600;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .option{
+    background:rgba(255,255,255,0.07);
+    border:2px solid rgba(212,175,55,0.4);
+    border-radius:12px;
+    padding:16px 20px;
+    cursor:pointer;
+    font-size:0.65em;
+    line-height:1.3;
+    transition:all 0.2s ease;
+  }
+  .option:hover{
+    background:rgba(212,175,55,0.15);
+    border-color:var(--gold);
+  }
+  .option.correct{
+    background:rgba(30,125,50,0.5);
+    border-color:var(--green);
+  }
+  .option.wrong{
+    background:rgba(198,40,40,0.5);
+    border-color:var(--red);
+  }
+  .option.disabled{
+    pointer-events:none;
+  }
+  .feedback{
+    margin-top:20px;
+    font-size:0.6em;
+    font-weight:bold;
+    min-height:1.2em;
+  }
+  .feedback.correct{color:#7CFC9A;}
+  .feedback.wrong{color:#FF8A80;}
+  .nav-buttons{
+    display:flex;
+    justify-content:space-between;
+    margin-top:30px;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  button.nav{
+    font-size:0.55em;
+    padding:12px 26px;
+    border-radius:10px;
+    border:none;
+    background:var(--gold);
+    color:var(--navy);
+    font-weight:bold;
+    cursor:pointer;
+  }
+  button.nav:disabled{
+    opacity:0.4;
+    cursor:not-allowed;
+  }
+  #jumpBox{
+    max-width:900px;
+    margin:20px auto 0;
+    text-align:center;
+    font-size:0.45em;
+    color:#9fb3e0;
+  }
+  #jumpBox select{
+    font-size:1em;
+    padding:6px 10px;
+    border-radius:8px;
+    border:1px solid var(--gold);
+    background:var(--navy-light);
+    color:var(--white);
+  }
+  #result{
+    max-width:900px;
+    margin:0 auto;
+    text-align:center;
+    background:var(--navy-light);
+    border-radius:18px;
+    padding:50px 40px;
+    border:2px solid var(--gold);
+    display:none;
+  }
+  #result h2{color:var(--gold);font-size:1.1em;}
+  #score{
+    font-size:1.5em;
+    color:var(--white);
+    margin:20px 0;
+  }
+  #restart{
+    font-size:0.55em;
+    padding:14px 30px;
+    border-radius:10px;
+    border:none;
+    background:var(--gold);
+    color:var(--navy);
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:20px;
+  }
+</style>
+</head>
+<body>
+
+<h1>CÂU HỎI TRẮC NGHIỆM</h1>
+<h2>Bài 9 - 10: Rao Giảng Nước Trời (Mt 8,1-34)</h2>
+<div id="progress"></div>
+
+<div class="card" id="quizCard">
+  <div class="question" id="questionText"></div>
+  <div class="options" id="optionsBox"></div>
+  <div class="feedback" id="feedback"></div>
+  <div class="nav-buttons">
+    <button class="nav" id="prevBtn">← Câu trước</button>
+    <button class="nav" id="nextBtn">Câu tiếp →</button>
+  </div>
+</div>
+
+<div id="jumpBox">
+  Đi tới câu:
+  <select id="jumpSelect"></select>
+</div>
+
+<div id="result">
+  <h2>KẾT QUẢ</h2>
+  <div id="score"></div>
+  <button id="restart">Làm lại</button>
+</div>
+
+<script>
+const questions = [
+  {
+    "q": "Sau Bài Giảng Trên Núi (Mt 5–7), thánh Mát-thêu trình bày điều gì trong chương 8? (câu 1-bài 10)",
+    "opts": [
+      "Quyền năng của Đức Giêsu khi chữa bệnh.",
+      "Điều kiện trở thành môn đệ Đức Giêsu",
+      "Quyền năng của Đức Giesu trên thiên nhiên và ma quỷ",
+      "Cả A, B & C"
+    ],
+    "ans": 3
+  },
+  {
+    "q": "Theo bố cục của Mt 8,1–34, phân đoạn đầu tiên nói về điều gì nơi Đức Giêsu? (Câu 1- bài 10)",
+    "opts": [
+      "Quyền năng trên thiên nhiên và ma quỷ",
+      "Điều kiện trở thành môn đệ",
+      "Quyền năng khi chữa lành bệnh nhân",
+      "Sự chống đối của dân chúng"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Người đầu tiên được Đức Giêsu chữa lành sau khi xuống núi là ai? (câu 2-bài 10)",
+    "opts": [
+      "Một người mù",
+      "Một người phong hủi",
+      "Một người bị quỷ ám",
+      "Một người què quặt"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "1 Khi Đức Giêsu ở trên núi xuống, đám đông lũ lượt đi theo Người. 2 Bỗng có một người phù phúng tiến lại, bái lạy Người và nói: \"Thưa Ngài, nếu Ngài muốn, Ngài có thể làm cho tôi được sạch.\" 3 Người giơ tay đụng vào anh và bảo: \"Tôi muốn, anh sạch đi.\" Lập tức, anh được sạch bệnh phong hủi. Câu này đúng hay sai?(câu 2-bài 10)",
+    "opts": [
+      "Đúng",
+      "Sai"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Đâu là lệnh truyền của Đức Giêsu nói với anh bị bệnh phong hủi sau khi chữa khỏi bệnh cho anh? (câu 3 – bài 10)",
+    "opts": [
+      "“Coi chừng đừng nói với ai cả”",
+      "“Đi trình diện tư tế như Mô-sê đã truyền”",
+      "“Làm chứng cho người ta biết”",
+      "Cả A, B & C"
+    ],
+    "ans": 3
+  },
+  {
+    "q": "Sau khi được chữa lành, Đức Giêsu bảo người phong hủi đi đâu? (câu 3- bài 10)",
+    "opts": [
+      "Về nhà báo tin cho mọi người",
+      "Đi theo các môn đệ",
+      "Trình diện tư tế và dâng của lễ như ông Mô-sê truyền",
+      "Đến Đền Thờ Giêrusalem để cầu nguyện"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Sau khi chữa người phong hủi, Đức Giêsu đi vào thành nào? (câu 4- bài 10)",
+    "opts": [
+      "Bêlem",
+      "Caphácnaum",
+      "Nadarét",
+      "Giêrusalem"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Ai đã đến gặp Đức Giêsu ở Caphácnaum để xin chữa bệnh? (câu 4- bài 10)",
+    "opts": [
+      "Một người thu thuế",
+      "Một người phong hủi khác",
+      "Một viên đại đội trưởng",
+      "Một kinh sư"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Người đầy tớ của viên đại đội trưởng mắc bệnh gì? (câu 4- bài 10)",
+    "opts": [
+      "Mù lòa",
+      "Tê bại nằm liệt ở nhà",
+      "Phong hủi",
+      "Bị quỷ ám"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Khi ấy Đức Giêsu vào thành Bethsaida, có một viên đại đội trưởng đến gặp Người và nài xin: 6 \"Thưa Ngài, tên đầy tớ của tôi bị tê bại nằm liệt ở nhà, đau đớn lắm. \"7 Người nói: \"Anh cứ về, vì lòng tin của anh đã cứu chữa nó”. Câu này đúng hay sai?(câu 4- bài 10)",
+    "opts": [
+      "Đúng",
+      "Sai"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Viên đại đội trưởng đáp: 8 \"Thưa Ngài, tôi chẳng đáng Ngài vào nhà tôi, nhưng xin Ngài hãy vào đặt tay chữa bệnh là đầy tớ tôi được khỏi bệnh. 9 Vì tôi đây, tuy dưới quyền kẻ khác, tôi cũng có lính tráng dưới quyền tôi. Tôi bảo người này: \"Đi!\", là nó đi, bảo người kia: \"Đến!\", là nó đến, và bảo người nô lệ của tôi: \"Làm cái này!\", là nó làm.\" Câu này đúng hay sai? (câu 5- bài 10)",
+    "opts": [
+      "Đúng",
+      "Sai"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Qua phép lạ Đức Giêsu chữa lành cho người đầy tớ viên đại đội trưởng, thánh sử Mattheu nhấn mạnh điều gì nơi đại đội trưởng? (câu 7- bài 10)",
+    "opts": [
+      "Đức tin chân thật",
+      "Lòng kiên trì",
+      "Lòng tin vững mạnh",
+      "Đức khiêm nhường"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Qua phép lạ Đức Giêsu chữa lành cho người đầy tớ viên đại đội trưởng, để đức tin  trưởng thành hơn luôn cần đến ? (câu 7- bài 10)",
+    "opts": [
+      "Ơn Chúa",
+      "Sự khiêm nhường",
+      "Niềm phó thác",
+      "Đức bác ái"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Đức Giêsu đã chữa lành cho ai trong nhà ông Phê-rô? (câu 8 – bài 10)",
+    "opts": [
+      "Người con trai của ông",
+      "Người đầy tớ của ông",
+      "Bà mẹ vợ ông",
+      "Em gái ông"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Sau khi được chữa khỏi cơn sốt, bà mẹ vợ ông Phê-rô đã làm gì? (câu 8 – bài 10)",
+    "opts": [
+      "Đi báo tin cho dân chúng",
+      "Chỗi dậy phục vụ Đức Giêsu",
+      "Đi theo Đức Giêsu",
+      "Trở về quê nhà"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Đức Giêsu đến nhà ông Phê-rô, thấy bà mẹ vợ ông đang nằm liệt và lên cơn sốt. 15 Người đụng vào tay bà, cơn sốt dứt ngay và bà chỗi dậy phục vụ Người .16 Chiều đến, người ta đem nhiều kẻ bị quỷ ám tới gặp Đức Giêsu. Người nói một lời là trừ được các thần dữ và Người chữa lành mọi kẻ ốm đau, 17 để ứng nghiệm lời ngôn sứ Giêremia: Người đã mang lấy các tật nguyền của ta và gánh lấy các bệnh hoạn của ta. Câu này đúng hay sai?",
+    "opts": [
+      "Đúng",
+      "Sai"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Qua các phép lạ ở Mt 8,1-17, thánh sử Mát-thêu  trình bày Đức Giêsu là ai? (câu 9 – bài 10)",
+    "opts": [
+      "Con Thiên Chúa",
+      "Đấng Toàn Năng",
+      "Đấng giải thoát",
+      "Đấng Cứu Độ"
+    ],
+    "ans": 3
+  },
+  {
+    "q": "Theo lời tuyên xưng của viên đại đội trưởng, quyền năng nơi Lời của Đức Giêsu không chỉ chữa lành bệnh thể lý mà còn điều gì? (câu 9 – bài 10)",
+    "opts": [
+      "Chữa lành tâm hồn và mang lại sự sống.",
+      "Ban của cải vật chất cho con người",
+      "Giúp con người tránh mọi đau khổ.",
+      "Làm cho mọi người trở nên hoàn thiện"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Thấy xung quanh có đám đông, Đức Giêsu ra lệnh sang bờ bên kia. 19 Một Phariseu tiến đến thưa Người rằng: \"Thưa Thầy, Thầy đi đâu, tôi cũng xin đi theo.\" 20 Đức Giêsu trả lời: \"Con chồn có hang, chim trời có tổ, nhưng con người không có chỗ tựa đầu.\" 21 Một môn đệ khác thưa với Người: \"Thưa Ngài, xin cho phép con về chôn cất cha con trước đã.\" 22 Đức Giêsu bảo: \"Anh hãy đi theo tôi, cứ để kẻ chết chôn kẻ chết của họ.\" (Mt 8,18-22) Câu này đúng hay sai?(câu 10 – bài 10)",
+    "opts": [
+      "Đúng",
+      "Sai"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Qua những lời của Đức Giêsu với kinh sư và môn đệ trong (Mt 8,18-22), để trở thành môn đệ của Ngài cần phải từ bỏ sự an toàn mà họ đang bám víu. Vậy bám víu đó là gì? (câu 11 – bài 10)",
+    "opts": [
+      "Của cải",
+      "Tiện nghi",
+      "Sự ổn định trong cuộc sống",
+      "Cả A, B & C"
+    ],
+    "ans": 3
+  },
+  {
+    "q": "Theo thánh sử Mát-thêu, thái độ nào cần có khi quyết định theo Đức Giêsu? (câu 11 – bài 10)",
+    "opts": [
+      "Chờ đợi thời điểm thuận lợi hơn",
+      "Theo Đức Giêsu khi đã ổn định cuộc sống.",
+      "Quyết định dứt khoát và không trì hoãn",
+      "Theo Đức Giêsu khi được người khác khích lệ."
+    ],
+    "ans": 2
+  },
+  {
+    "q": "“Đức Giêsu xuống thuyền, các môn đệ đi theo Người. 24 Bỗng nhiên biển động mạnh khiến sóng ập vào thuyền, nhưng Người vẫn ngủ. 25 Các ông lại gần đánh thức Người và nói: \"Thưa Ngài, xin cứu chúng con, chúng con chết mất! \" 26 Đức Giêsu nói: \"Sao nhát thế, hỡi những người kém lòng tin! \" Rồi Người chỗi dậy, ngăm đe gió và biển: biển liền lặng như tờ. 27 Người ta ngạc nhiên và nói: \"Ông này là người thế nào mà cả đến gió và biển cũng tuân lệnh? \" Câu này đúng hay sai? (câu 12 – bài 10)",
+    "opts": [
+      "Đúng",
+      "Sai"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Qua phép lạ Đức Giêsu dẹp yên biển động, thánh Mát-thêu trình bày Đức Giêsu có quyền năng trên? (câu 13- bài 10)",
+    "opts": [
+      "Vũ trụ",
+      "Thiên nhiên",
+      "Bão tố",
+      "Gió biển"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Khi Đức Giêsu sang bờ bên kia, và đến miền Ga-li-lê, thì có hai người bị quỷ ám từ trong đám mồ mả ra đón Người; chúng rất dữ tợn, đến nỗi không ai dám qua lại lối ấy. 29 Chúng la lên rằng: \"Hỡi ông Giêsu, chuyện chúng tôi can gì đến ông? Chưa tới lúc mà ông đã đến đây làm khổ chúng tôi sao? \" (Mt 8, 28-29). Câu này đúng hay sai? (câu 14- bài 10)",
+    "opts": [
+      "Đúng",
+      "Sai"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Khi biển động mạnh, Đức Giêsu đang làm gì? (câu 12- bài 10)",
+    "opts": [
+      "Đang giảng dạy các môn đệ",
+      "Đứng cầu nguyện",
+      "Đang ngủ trên thuyền",
+      "Đi bộ trên mặt nước"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Qua phép lạ chữa lành hai người bị quỷ ám, Tin Mừng Mát-thêu cho thấy điều gì về Đức Giêsu? (câu 15- bài 10)",
+    "opts": [
+      "Đức Giêsu chỉ có quyền năng trên thiên nhiên.",
+      "Đức Giêsu chỉ giảng dạy mà không thực hiện phép lạ.",
+      "Đức Giêsu không can thiệp vào quyền lực sự dữ.",
+      "Đức Giêsu có quyền năng tuyệt đối trên ma quỷ."
+    ],
+    "ans": 3
+  },
+  {
+    "q": "Sự dữ có thể gây ra hậu quả nào nơi con người theo trình thuật Mt 8,28–34? (câu 15- bài 10)",
+    "opts": [
+      "Chỉ gây tổn thương thể lý.",
+      "Làm con người mất hoàn toàn tự do.",
+      "Làm cho phẩm giá con người bị sai lệch.",
+      "Không ảnh hưởng đến đời sống con người."
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Qua trình thuật Mt 8,34 cho thấy con người vẫn có thể từ chối ơn cứu độ của Thiên Chúa bởi vì? (câu 15- bài 10)",
+    "opts": [
+      "Bám víu vào vật chất.",
+      "Cứng lòng tin",
+      "Sợ hãi",
+      "Thiên Chúa"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Qua những bài học thực hành của bài giảng trên núi, có mấy bài học đối với chúng ta? (Bài 9 câu 12)",
+    "opts": [
+      "4 bài",
+      "5 bài",
+      "3 bài",
+      "bài (không rõ số)"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Trong chương 8 câu 1-34 được phân chia trình bày mấy nội dung chính bài 10 câu 1?",
+    "opts": [
+      "2 nội dung",
+      "3 nội dung",
+      "4 nội dung",
+      "5 nội dung"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Lệnh truyền của đức Giê-su với người mắc bệnh phong có mấy ý nghĩa?",
+    "opts": [
+      "Có 3 ý",
+      "Có 2 ý",
+      "Có 4 ý",
+      "Có 5 ý"
+    ],
+    "ans": 0
+  }
+];
+
+let current = 0;
+let answered = new Array(questions.length).fill(null);
+const letters = ["A","B","C","D"];
+
+const questionText = document.getElementById('questionText');
+const optionsBox = document.getElementById('optionsBox');
+const feedback = document.getElementById('feedback');
+const progress = document.getElementById('progress');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const quizCard = document.getElementById('quizCard');
+const resultBox = document.getElementById('result');
+const scoreEl = document.getElementById('score');
+const jumpSelect = document.getElementById('jumpSelect');
+
+questions.forEach((q,i)=>{
+  const opt = document.createElement('option');
+  opt.value = i;
+  opt.textContent = `Câu ${i+1}`;
+  jumpSelect.appendChild(opt);
+});
+
+function render(){
+  const item = questions[current];
+  progress.textContent = `Câu ${current+1} / ${questions.length}`;
+  questionText.textContent = item.q;
+  optionsBox.innerHTML = "";
+  feedback.textContent = "";
+  feedback.className = "feedback";
+  jumpSelect.value = current;
+
+  item.opts.forEach((opt,i)=>{
+    const div = document.createElement('div');
+    div.className = "option";
+    div.textContent = letters[i] + ". " + opt;
+    div.onclick = () => selectAnswer(i);
+    if(answered[current] !== null){
+      div.classList.add('disabled');
+      if(i === item.ans) div.classList.add('correct');
+      if(i === answered[current] && i !== item.ans) div.classList.add('wrong');
+    }
+    optionsBox.appendChild(div);
+  });
+
+  if(answered[current] !== null){
+    if(answered[current] === item.ans){
+      feedback.textContent = "✔ Chính xác!";
+      feedback.classList.add('correct');
+    } else {
+      feedback.textContent = "✘ Sai rồi. Đáp án đúng là " + letters[item.ans] + ".";
+      feedback.classList.add('wrong');
+    }
+  }
+
+  prevBtn.disabled = current === 0;
+  nextBtn.textContent = current === questions.length-1 ? "Xem kết quả" : "Câu tiếp →";
+}
+
+function selectAnswer(i){
+  if(answered[current] !== null) return;
+  answered[current] = i;
+  render();
+}
+
+prevBtn.onclick = () => { if(current>0){current--; render();} };
+nextBtn.onclick = () => {
+  if(current === questions.length-1){
+    showResult();
+  } else {
+    current++;
+    render();
+  }
+};
+
+jumpSelect.onchange = () => {
+  current = parseInt(jumpSelect.value);
+  render();
+};
+
+function showResult(){
+  quizCard.style.display = "none";
+  progress.style.display = "none";
+  document.getElementById('jumpBox').style.display = "none";
+  let score = 0;
+  answered.forEach((a,i)=>{ if(a===questions[i].ans) score++; });
+  resultBox.style.display = "block";
+  scoreEl.textContent = `Bạn trả lời đúng ${score} / ${questions.length} câu`;
+}
+
+document.getElementById('restart').onclick = () => {
+  answered = new Array(questions.length).fill(null);
+  current = 0;
+  quizCard.style.display = "block";
+  progress.style.display = "block";
+  document.getElementById('jumpBox').style.display = "block";
+  resultBox.style.display = "none";
+  render();
+};
+
+render();
+</script>
+</body>
+</html>
