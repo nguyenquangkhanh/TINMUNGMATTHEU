@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bài 7-8-9 - Bài Giảng Trên Núi</title>
+<style>
+  :root{
+    --navy:#0a1f44;
+    --navy-2:#12285c;
+    --navy-light:#1e3a75;
+    --gold:#d4af37;
+    --white:#ffffff;
+    --green:#1e7d32;
+    --red:#c62828;
+    --fs:22pt;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', Tahoma, Arial, sans-serif;
+    background:linear-gradient(160deg,var(--navy) 0%,var(--navy-2) 100%);
+    color:var(--white);
+    font-size:var(--fs);
+    padding:30px 20px 80px;
+  }
+  h1{
+    text-align:center;
+    font-size:1.4em;
+    color:var(--gold);
+    margin-bottom:0.1em;
+    letter-spacing:1px;
+  }
+  h2{
+    text-align:center;
+    font-size:1em;
+    color:var(--white);
+    font-weight:normal;
+    margin-top:0;
+    margin-bottom:1em;
+  }
+  #progress{
+    text-align:center;
+    color:var(--gold);
+    font-size:0.6em;
+    margin-bottom:6px;
+  }
+  #sectionLabel{
+    text-align:center;
+    color:#9fb3e0;
+    font-size:0.5em;
+    margin-bottom:20px;
+    text-transform:uppercase;
+    letter-spacing:2px;
+  }
+  .card{
+    max-width:900px;
+    margin:0 auto;
+    background:var(--navy-light);
+    border-radius:18px;
+    padding:35px 40px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    border:2px solid var(--gold);
+  }
+  .question{
+    font-size:0.85em;
+    line-height:1.4;
+    margin-bottom:25px;
+    font-weight:600;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .option{
+    background:rgba(255,255,255,0.07);
+    border:2px solid rgba(212,175,55,0.4);
+    border-radius:12px;
+    padding:16px 20px;
+    cursor:pointer;
+    font-size:0.65em;
+    line-height:1.3;
+    transition:all 0.2s ease;
+  }
+  .option:hover{
+    background:rgba(212,175,55,0.15);
+    border-color:var(--gold);
+  }
+  .option.correct{
+    background:rgba(30,125,50,0.5);
+    border-color:var(--green);
+  }
+  .option.wrong{
+    background:rgba(198,40,40,0.5);
+    border-color:var(--red);
+  }
+  .option.disabled{
+    pointer-events:none;
+  }
+  .feedback{
+    margin-top:20px;
+    font-size:0.6em;
+    font-weight:bold;
+    min-height:1.2em;
+  }
+  .feedback.correct{color:#7CFC9A;}
+  .feedback.wrong{color:#FF8A80;}
+  .nav-buttons{
+    display:flex;
+    justify-content:space-between;
+    margin-top:30px;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  button.nav{
+    font-size:0.55em;
+    padding:12px 26px;
+    border-radius:10px;
+    border:none;
+    background:var(--gold);
+    color:var(--navy);
+    font-weight:bold;
+    cursor:pointer;
+  }
+  button.nav:disabled{
+    opacity:0.4;
+    cursor:not-allowed;
+  }
+  #jumpBox{
+    max-width:900px;
+    margin:20px auto 0;
+    text-align:center;
+    font-size:0.45em;
+    color:#9fb3e0;
+  }
+  #jumpBox select{
+    font-size:1em;
+    padding:6px 10px;
+    border-radius:8px;
+    border:1px solid var(--gold);
+    background:var(--navy-light);
+    color:var(--white);
+  }
+  #result{
+    max-width:900px;
+    margin:0 auto;
+    text-align:center;
+    background:var(--navy-light);
+    border-radius:18px;
+    padding:50px 40px;
+    border:2px solid var(--gold);
+    display:none;
+  }
+  #result h2{color:var(--gold);font-size:1.1em;}
+  #score{
+    font-size:1.5em;
+    color:var(--white);
+    margin:20px 0;
+  }
+  #restart{
+    font-size:0.55em;
+    padding:14px 30px;
+    border-radius:10px;
+    border:none;
+    background:var(--gold);
+    color:var(--navy);
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:20px;
+  }
+</style>
+</head>
+<body>
+
+<h1>CÂU HỎI TRẮC NGHIỆM</h1>
+<h2>Bài 7 - 8 - 9: Bài Giảng Trên Núi</h2>
+<div id="progress"></div>
+<div id="sectionLabel"></div>
+
+<div class="card" id="quizCard">
+  <div class="question" id="questionText"></div>
+  <div class="options" id="optionsBox"></div>
+  <div class="feedback" id="feedback"></div>
+  <div class="nav-buttons">
+    <button class="nav" id="prevBtn">← Câu trước</button>
+    <button class="nav" id="nextBtn">Câu tiếp →</button>
+  </div>
+</div>
+
+<div id="jumpBox">
+  Đi tới câu:
+  <select id="jumpSelect"></select>
+</div>
+
+<div id="result">
+  <h2>KẾT QUẢ</h2>
+  <div id="score"></div>
+  <button id="restart">Làm lại</button>
+</div>
+
+<script>
+const questions = [
+  {
+    "q": "Mt 5,1–48 được chia thành bao nhiêu phần chính? ( câu 1- bài 7)",
+    "opts": [
+      "Hai phần",
+      "Ba phần",
+      "Bốn phần",
+      "Năm phần"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Bài giảng về các Mối Phúc nằm ở đoạn nào? ( câu 1-bài 7)",
+    "opts": [
+      "Mt 5,1–12",
+      "Mt 5,13–16",
+      "Mt 5,17–20",
+      "Mt 5,21–24"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Theo Mt 5,1-12, Đức Giêsu đã giảng về các mối phúc tại đâu? (câu 2-bài 7)",
+    "opts": [
+      "Trong hội đường",
+      "Trên núi",
+      "Trong đền thờ",
+      "Bên bờ biển"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Mối phúc đầu tiên nói đến ai? ( câu 2- bài 7)",
+    "opts": [
+      "Người hiền lành",
+      "Người sầu khổ",
+      "Người nghèo khó trong tâm hồn",
+      "Người xây dựng hòa bình"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "“Phúc thay ai hiền lành” vì họ sẽ được gì? ( câu 2-bài 7)",
+    "opts": [
+      "Nhìn thấy Thiên Chúa",
+      "Đất Hứa làm gia nghiệp",
+      "Được Nước Trời",
+      "Được xót thương"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "“Phúc thay ai xây dựng hòa bình” vì họ sẽ được gọi là gì? ( câu 2-bài7)",
+    "opts": [
+      "Người công chính",
+      "Con Thiên Chúa",
+      "Người thánh thiện",
+      "Người được chọn"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Sau các Mối Phúc, Đức Giêsu gọi các môn đệ là gì? ( câu 4-bài 7)",
+    "opts": [
+      "Người công chính",
+      "Người được chọn",
+      "Người rao giảng",
+      "Muối cho đời"
+    ],
+    "ans": 3
+  },
+  {
+    "q": "Ngoài “muối cho đời”, Đức Giêsu còn gọi môn đệ là gì? ( câu 4-bài 7)",
+    "opts": [
+      "Ánh sáng cho trần gian",
+      "Ánh sáng Israel",
+      "Ánh sáng hội đường",
+      "Ánh sáng luật pháp"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Đức Giêsu nói Ngài đến để làm gì đối với Lề Luật? ( câu 6-bài 7)",
+    "opts": [
+      "Hủy bỏ",
+      "Sửa đổi",
+      "Kiện toàn",
+      "Thay thế"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Theo Mt 5,21, Luật xưa dạy điều gì? ( câu 8- bài 7)",
+    "opts": [
+      "Chớ ngoại tình",
+      "Chớ giết người",
+      "Chớ trộm cắp",
+      "Chớ nói dối"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Theo lời Đức Giêsu, ai nhìn phụ nữ mà thèm muốn thì đã phạm tội gì? ( câu 10-bài 7)",
+    "opts": [
+      "Kiêu ngạo",
+      "Bất công",
+      "Phản bội",
+      "Ngoại tình"
+    ],
+    "ans": 3
+  },
+  {
+    "q": "Theo luật xưa, người rẫy vợ phải làm gì? ( câu 11- bài 7)",
+    "opts": [
+      "Xin phép đền thờ",
+      "Cho chứng thư ly dị",
+      "Trình lên hội đường",
+      "Xin phép thượng tế"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Theo bài học trong tài liệu, các Mối Phúc chủ yếu mạc khải điều gì? ( câu 3- bài 7)",
+    "opts": [
+      "Các nhân đức đạo đức",
+      "Lời khuyên đạo đức",
+      "Luật luân lý",
+      "Căn tính của những người thuộc Nước Trời"
+    ],
+    "ans": 3
+  },
+  {
+    "q": "Những người sống các Mối Phúc được gọi là người thuộc về Nước Trời vì điều gì? (câu 3-bài 7)",
+    "opts": [
+      "Công trạng cá nhân",
+      "Công việc bác ái",
+      "Ân ban của Thiên Chúa",
+      "Việc giữ luật"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Theo tài liệu, trở thành “muối cho đời” nghĩa là gì? ( câu 5-bài 7)",
+    "opts": [
+      "Làm cho thế gian tốt đẹp",
+      "Gìn giữ và bảo vệ đức tin",
+      "Cải cách xã hội",
+      "Lãnh đạo cộng đoàn"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "“Công chính hơn các kinh sư và Pharisêu” nghĩa là gì? ( câu 7-bài 7)",
+    "opts": [
+      "Giữ luật nhiều hơn",
+      "Hoán cải nội tâm",
+      "Cầu nguyện nhiều hơn",
+      "Tuân giữ nghi lễ"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Theo Đức Giêsu, trước khi dâng lễ cần làm gì? ( câu 8-bài 7)",
+    "opts": [
+      "Cầu nguyện",
+      "Xưng tội",
+      "Ăn chay",
+      "Hòa giải với anh em"
+    ],
+    "ans": 3
+  },
+  {
+    "q": "Theo Mt 5,28, tội ngoại tình bắt đầu từ đâu? ( câu 12-bài 7)",
+    "opts": [
+      "Hành động",
+      "Cái nhìn và ước muốn",
+      "Lời nói",
+      "Luật pháp"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Đức Giêsu dạy gì về lời thề? (câu 13-bài 7)",
+    "opts": [
+      "Không thề chi cả",
+      "Chỉ thề khi cần",
+      "Chỉ thề trước Thiên Chúa",
+      "Chỉ thề trong đền thờ"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Theo lời dạy của Đức Giêsu, khi bị vả má bên phải thì phải làm gì? ( câu 14-bài7)",
+    "opts": [
+      "Tránh đi",
+      "Đáp trả",
+      "Giơ cả má bên trái",
+      "Kiện ra tòa"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Theo Mt 5,42, thái độ đối với người xin là gì? ( câu 14-bài 7)",
+    "opts": [
+      "Tránh xa",
+      "Cho họ",
+      "Khuyên họ làm việc",
+      "Không trả lời"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Theo lời Đức Giêsu, người môn đệ phải đối xử thế nào với kẻ thù? ( câu 15-bài 7)",
+    "opts": [
+      "Cầu nguyện",
+      "Trừng phạt",
+      "Yêu thương",
+      "Cả A & C"
+    ],
+    "ans": 3
+  },
+  {
+    "q": "Mục tiêu cuối cùng của giáo huấn Đức Giêsu trong Mt 5, 27-48 muốn con người làm điều gì? ( câu 16-bài 7)",
+    "opts": [
+      "Tuân giữ luật",
+      "Hoàn thiện như Cha trên trời",
+      "Giữ truyền thống Israel",
+      "Trở thành người công chính"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Chương 6 của Tin Mừng Mát-thêu được chia thành bao nhiêu phần chính? ( câu 1- bài 8)",
+    "opts": [
+      "Hai phần",
+      "Ba phần",
+      "Bốn phần",
+      "Năm phần"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Phần đầu tiên của Mt 6,1-18 nói về điều gì? (câu 1-bài 8)",
+    "opts": [
+      "Chọn giá trị Tin Mừng",
+      "Phó thác vào Thiên Chúa",
+      "Sống luật yêu thương",
+      "Không phô trương đạo đức"
+    ],
+    "ans": 3
+  },
+  {
+    "q": "Phần chọn giá trị Tin Mừng nằm phân đoạn nào trong chương 6 ? (câu 1-bài 8)",
+    "opts": [
+      "Mt 6,1-18",
+      "Mt 6,19-24",
+      "Mt 6,25-34",
+      "Mt 6, 35-40"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Phần nào trong chương 6 dạy \"Sống tin cậy vào sự quan phòng của Thiên Chúa, không lo lắng thái quá\" ? (câu 1-bài 8)",
+    "opts": [
+      "Chọn giá trị Tin Mừng",
+      "Sống luật yêu thương",
+      "Phó thác vào Thiên Chúa",
+      "Không phô trương đạo đức"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Việc đạo đức đầu tiên mà Đức Giêsu dạy các môn đệ là gì? ( câu 2-bài 8)",
+    "opts": [
+      "Cầu nguyện",
+      "Ăn chay",
+      "Bố thí",
+      "Hành hương"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Khi làm việc lành phúc đức, Đức Giêsu dạy không được làm gì? ( câu 2- bài 8)",
+    "opts": [
+      "Biểu diễn trong hội đường",
+      "Đừng cho tay trái biết",
+      "Khua chiêng đánh trống",
+      "Phô trương cho thiên hạ thấy"
+    ],
+    "ans": 3
+  },
+  {
+    "q": "Theo Mt 6,3, khi bố thí thì điều gì không được biết việc gì? ( câu 2-bài 8)",
+    "opts": [
+      "Tay phải biết việc tay trái làm",
+      "Tay trái biết việc tay phải làm",
+      "Mắt phải biết việc mắt trái làm",
+      "Người khác biết việc mình làm"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Hành động thứ hai Giêsu dạy là gì? ( câu 3- bài 8)",
+    "opts": [
+      "Cầu nguyện kín đáo",
+      "Bố thí công khai",
+      "Ăn chay phô trương",
+      "Giữ luật nghiêm ngặt"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Theo Mt 6,7, Đức Giêsu cảnh báo điều gì khi cầu nguyện? ( câu 5- bài 8)",
+    "opts": [
+      "Không cầu nguyện chung",
+      "Không cầu nguyện dài",
+      "Không lải nhải như dân ngoại",
+      "Không cầu xin"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Lời cầu nguyện mẫu mực mà Đức Giêsu dạy được gọi là gì? ( câu 5- bài 8)",
+    "opts": [
+      "Kinh Tin Kính",
+      "Kinh Lạy Cha",
+      "Kinh Sáng Danh",
+      "Kinh Chúc Tụng"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Kinh Lạy Cha trong Mt 6 được chia thành bao nhiêu phần chính? (câu 6- bài 8)",
+    "opts": [
+      "Hai phần",
+      "Ba phần",
+      "Bốn phần",
+      "Năm phần"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Khi ăn chay, Đức Giêsu dạy các môn đệ phải có thái độ nào? (câu 8-bài 8)",
+    "opts": [
+      "Buồn rầu",
+      "Phô trương",
+      "Kín đáo và vui vẻ",
+      "Công khai cho mọi người thấy"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Đức Giêsu dạy không nên tích trữ điều gì? ( câu 9-bài 8)",
+    "opts": [
+      "Lương thực",
+      "Kho tàng dưới đất",
+      "Tiền bạc",
+      "Áo quần"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Theo Mt 6,21: “Kho tàng của anh ở đâu…?” (câu 9-bài 8)",
+    "opts": [
+      "Tâm trí anh ở đó",
+      "Đức tin anh ở đó",
+      "Lòng anh ở đó",
+      "Hy vọng anh ở đó"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Theo lời Đức Giêsu, con người không thể làm tôi cho mấy chủ? ( câu 9-bài 8)",
+    "opts": [
+      "Hai chủ",
+      "Ba chủ",
+      "Bốn chủ",
+      "Nhiều chủ"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Hai hình ảnh Đức Giêsu dùng để dạy về sự quan phòng của Thiên Chúa là gì? ( câu 10- bài 8)",
+    "opts": [
+      "Chim trời và hoa huệ",
+      "Cây nho và cành nho",
+      "Chiên và mục tử",
+      "Hạt cải và men"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Theo Mt 6,33, điều phải tìm kiếm trước hết là gì? ( câu 11-bài 8)",
+    "opts": [
+      "Kho tàng trên trời",
+      "Nước Thiên Chúa",
+      "Đức công chính của Người",
+      "Cả B và C"
+    ],
+    "ans": 3
+  },
+  {
+    "q": "Phần: \"Chúc tụng và cầu xin Thiên Chúa Cha (6,9-12a)\", nằm phần thứ 2 trong kinh Lạy Cha. Đúng hay sai? ( câu 6-bài 8)",
+    "opts": [
+      "Đúng",
+      "Sai"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Trong phần thứ 2 (6,12b-15) của kinh Lạy Cha, Chúa Giêsu dạy chúng ta hãy sống mối tương quan với ai?( câu 6-bài 8)",
+    "opts": [
+      "Tha nhân",
+      "Chình mình",
+      "Thiên Chúa",
+      "Gia đình"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Kinh Lạy Cha là trung tâm của phần giáo huấn về điều gì mà Đức Giêsu đã dạy các môn đệ?( câu 7-bài 8)",
+    "opts": [
+      "Tha nhân",
+      "Mối tương quan",
+      "Lời cầu nguyện",
+      "Gia đình"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Đâu là nội dung lời rao giảng của Đức Giêsu và là đích điểm của con người hướng tới, nó được bắt đầu ngay từ cộng đoàn tại thế?( câu 7-bài 8)",
+    "opts": [
+      "Tin Mừng",
+      "Nước Trời",
+      "Đời sau",
+      "Cánh chung"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Đâu là thái độ mà Đức Giêsu đã dạy các môn đệ đối với sự quan phòng của Thiên Chúa?( câu 7-bài 8)",
+    "opts": [
+      "Hy sinh",
+      "Cầu nguyện",
+      "Tin tưởng",
+      "Phó thác"
+    ],
+    "ans": 3
+  },
+  {
+    "q": "Mt 7,1-29 thuộc phần nào trong Tin Mừng Mát-thêu? (câu 1-bài 9)",
+    "opts": [
+      "Dụ ngôn Nước Trời",
+      "Bài giảng trên núi",
+      "Hoạt động tại Galilê",
+      "Thương khó"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Phần đầu của Mt 7 nói về điều gì? (câu 1-bài 9)",
+    "opts": [
+      "Kiên trì trong lời cầu nguyện",
+      "Con đường trở thành môn đệ của Đức Giêsu",
+      "Ăn chay",
+      "Không xét đoán người khác"
+    ],
+    "ans": 3
+  },
+  {
+    "q": "Chúa Giêsu nói: 1 \"Anh em đừng xét đoán, để khỏi bị Thiên Chúa xét đoán, 2 vì anh em xét đoán thế nào, thì anh em cũng sẽ bị Thiên Chúa xét đoán như vậy; và anh em đong đấu nào, thì Thiên Chúa cũng sẽ đong đấu ấy cho anh em. Câu này đúng hay sai? (Câu 2-bài 9)",
+    "opts": [
+      "Đúng",
+      "Sai"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Hình ảnh nào được dùng để nói về sự giả hình khi xét đoán? (câu 3- bài 9)",
+    "opts": [
+      "Hạt cát và tảng đá",
+      "Hạt cải và cây lớn",
+      "Cái rác và cái xà",
+      "Nho và vả"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Đức Giêsu đã nhấn mạnh bản thân cần phải làm gì trước khi muốn sửa lỗi cho anh em? (câu 3- bài 9)",
+    "opts": [
+      "Ăn chay và cầu nguyện",
+      "Tin tưởng và phó thác",
+      "Bác ái và yêu thương",
+      "Khiêm tốn và hoán cải"
+    ],
+    "ans": 3
+  },
+  {
+    "q": "Câu “của thánh đừng quăng cho chó; ngọc trai chớ liệng cho heo, kẻo chúng giày đạp dưới chân, rồi còn quay lại cắn xé anh em” nhắc đến điều gì? (câu 4- bài 9)",
+    "opts": [
+      "Bác ái phổ quát",
+      "Sự phân định điều thánh thiêng",
+      "Luật thanh sạch",
+      "Sự khắt khe"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Đức Giêsu khẳng định: 7 \"Anh em cứ xin thì sẽ được, cứ tìm thì sẽ thấy, cứ gõ cửa thì sẽ mở ra cho.8 Vì hễ ai xin thì nhận được, ai tìm thì sẽ thấy, ai gõ cửa thì sẽ mở ra cho. 9 Có người nào trong anh em, khi con mình xin cái bánh, mà lại cho nó hòn đá? 10 Hoặc nó xin con cá, mà lại cho nó con rắn?. Câu này đúng hay sai? (câu 5- bài 9)",
+    "opts": [
+      "Đúng",
+      "Sai"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Vậy nếu anh em vốn là những kẻ xấu mà còn biết cho con cái mình những của tốt lành, phương chi Cha anh em, Đấng ngự trên trời, lại không ban những của tốt lành cho những kẻ kêu xin Người sao? 12 \"Vậy tất cả những gì anh em muốn họ làm cho mình, thì chính anh em cũng hãy làm cho họ, vì Lề Luật và lời các ngôn sứ là thế đó.Câu này đúng hay sai? (câu 5- bài 9)",
+    "opts": [
+      "Đúng",
+      "Sai"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Ba hành động giúp chúng ta tìm đến với Thiên Chúa như đến với một người Cha của mình là gì? (câu 6- bài 9)",
+    "opts": [
+      "Xin – cầu – chờ",
+      "Xin – nhận – giữ",
+      "Xin – hỏi – đợi",
+      "Xin – tìm – gõ"
+    ],
+    "ans": 3
+  },
+  {
+    "q": "Đức Giêsu dạy các môn đệ: \"Hãy qua cửa hẹp mà vào, vì cửa rộng và đường thênh thang thì đưa đến diệt vong, mà nhiều người lại đi qua đó. Còn cửa hẹp và đường chật thì đưa đến sự sống, nhưng ít người tìm được lối ấy. Câu này đúng hay sai? (câu 7- bài 9)",
+    "opts": [
+      "Đúng",
+      "Sai"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Đức Giêsu dạy các môn đệ: \"Hãy qua cửa hẹp mà vào, vì cửa rộng và đường thênh thang thì đưa đến diệt vong, mà nhiều người lại đi qua đó. Còn cửa hẹp và đường chật thì đưa đến sự sống, nhưng ít người tìm được lối ấy. Câu này thuộc Mt 7, 13-14 đúng hay sai? (câu 7- bài 9)",
+    "opts": [
+      "Đúng",
+      "Sai"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Đức Giêsu dạy rằng: 15 \"Anh em hãy coi chừng các tiên tri giả, họ đội lốt chiên mà tới với anh em; nhưng bên trong, họ là sói dữ tham mồi. 16 Cứ xem họ sinh hoa quả nào, thì biết họ là ai. Ở bụi gai, làm gì có nho mà hái? Trên cây sung, làm gì có vả mà bẻ? 17 Nên hễ cây tốt thì sinh quả tốt, cây xấu thì sinh quả xấu.18 Cây tốt không thể sinh quả xấu, cũng như cây xấu không thể sinh quả tốt.19 Cây nào không sinh quả tốt, thì bị chặt đi và quăng vào lửa.20 Vậy, cứ xem họ sinh hoa quả nào, thì biết họ là ai. Câu này đúng hay sai? (câu 8- bài 9)",
+    "opts": [
+      "Đúng",
+      "Sai"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Đường dẫn đến diệt vong có đặc điểm gì? (câu 7- bài 9)",
+    "opts": [
+      "Hẹp",
+      "Ít người đi",
+      "Rộng và thênh thang",
+      "Khó đi"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Đức Giêsu dạy phân biệt người tốt xấu dựa vào điều gì? (câu 8- bài 9)",
+    "opts": [
+      "Lời nói",
+      "Địa vị",
+      "Hoa quả",
+      "Luật pháp"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Ngôn sứ giả được ví như gì? (câu 8- bài 9)",
+    "opts": [
+      "Sói đội lốt chiên",
+      "Cây xấu",
+      "Người ngu dại",
+      "Kẻ gian ác"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Điều kiện để vào Nước Trời là gì? (câu 9- bài 9)",
+    "opts": [
+      "Kêu “Lạy Chúa! Lạy Chúa”",
+      "Làm phép lạ",
+      "Thi hành ý muốn của Cha",
+      "Giữ luật"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "\"Không phải bất cứ ai thưa với Thầy: \"Lạy Chúa! lạy Chúa! \" là được vào Nước Trời cả đâu! Nhưng chỉ ai thi hành ý muốn của Cha Thầy là Đấng Toàn Năng, mới được vào mà thôi. 22 Trong ngày ấy, nhiều người sẽ thưa với Thầy rằng: \"Lạy Chúa, nào chúng tôi đã chẳng từng nhân danh Chúa mà nói tiên tri, nhân danh Chúa mà chữa bệnh, nhân danh Chúa mà làm nhiều phép lạ đó sao? \" 23 Và bấy giờ Thầy sẽ tuyên bố với họ: Ta không hề biết các ngươi; xéo đi cho khuất mắt Ta, hỡi bọn làm điều gian ác!. Câu này đúng hay sai? (câu 9- bài 9)",
+    "opts": [
+      "Đúng",
+      "Sai"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Người nghe và thực hành lời Chúa được ví như ai? (câu 10- bài 9)",
+    "opts": [
+      "Người khôn xây nhà trên đá",
+      "Người xây nhà trên cát",
+      "Người gieo giống",
+      "Người mục tử"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Đám đông phản ứng thế nào sau khi nghe bài giảng trên núi của Đức Giesu? (câu 11- bài 9)",
+    "opts": [
+      "Nghi ngờ",
+      "Phản đối",
+      "Sửng sốt",
+      "Bỏ đi"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Qua đoạn Mt 7,7-12 thánh sử Mat-thêu muốn nhấn mạnh cho độc giả biết về điều gì? (câu 6- bài 9)",
+    "opts": [
+      "Nghi thức cầu nguyện",
+      "Sự kiên trì trong cầu nguyện",
+      "Lời cầu nguyện dài",
+      "Lời cầu xin cá nhân"
+    ],
+    "ans": 1
+  },
+  {
+    "q": "Thiên Chúa được trình bày như thế nào trong Mt 7,7-12? (câu 6- bài 9)",
+    "opts": [
+      "Đấng thiện hảo",
+      "Đấng có thẩm quyền",
+      "Người Cha nhân hậu",
+      "Người xét xử"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "“Cửa hẹp và đường chật” trong Mt 7, 7-12 tượng trưng cho điều gì? (câu 7- bài 9)",
+    "opts": [
+      "Sự hạn chế",
+      "Sự diệt vong",
+      "Lề luật",
+      "Sự sống"
+    ],
+    "ans": 3
+  },
+  {
+    "q": "Người nghe Lời Chúa nhưng không thực hành được ví giống với ai? (câu 10- bài 9)",
+    "opts": [
+      "Người khôn",
+      "Người gieo giống",
+      "Người xây nhà trên cát",
+      "Người công chính"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "A. Tin tưởng phó thác - Bác ái",
+    "opts": [
+      "Cầu nguyện – Hy sinh",
+      "Tin tưởng – Yêu thương",
+      "Cả ba đều sai"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Đức Giêsu kiện toàn lề luật từ việc tuân giữ bên ngoài đến việc tuân giữ từ bên trong con người, đòi hỏi chúng ta phải có một nội tâm (Mt 6,1-6).(câu 12- bài 9)",
+    "opts": [
+      "Mạnh mẽ",
+      "Công chính",
+      "Bình"
+    ],
+    "ans": 2
+  },
+  {
+    "q": "Bài giảng trên núi chương (Mt 7, 1-29 được chia thành mấy phần?",
+    "opts": [
+      "4 phần",
+      "3 phần",
+      "5 phần",
+      "6 phần"
+    ],
+    "ans": 0
+  },
+  {
+    "q": "Trong bài 9 dẫn nhập được bố cục phân chia thành 4 phân đoạn (Mt 7, 1-29) Không được xét đoán người khác (Mt 7, 1-5) Kiên trì trong lời cầu nguyện (Mt 7, 7-12) Con đường trở thành môn đệ của đức Giê-su (Mt 7, 13-27) Kết luận về bài giảng trên núi (Mt 7, 28-29) Đúng hay sai",
+    "opts": [
+      "Đúng",
+      "sai"
+    ],
+    "ans": 0
+  }
+];
+
+// Determine section label per question index based on original numbering embedded in question text
+function getSection(idx){
+  const q = questions[idx].q;
+  const m = q.match(/bài\s*(\d+)/i);
+  if(m) return "Bài " + m[1];
+  return "";
+}
+
+let current = 0;
+let answered = new Array(questions.length).fill(null);
+const letters = ["A","B","C","D"];
+
+const questionText = document.getElementById('questionText');
+const optionsBox = document.getElementById('optionsBox');
+const feedback = document.getElementById('feedback');
+const progress = document.getElementById('progress');
+const sectionLabel = document.getElementById('sectionLabel');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const quizCard = document.getElementById('quizCard');
+const resultBox = document.getElementById('result');
+const scoreEl = document.getElementById('score');
+const jumpSelect = document.getElementById('jumpSelect');
+
+questions.forEach((q,i)=>{
+  const opt = document.createElement('option');
+  opt.value = i;
+  opt.textContent = `Câu ${i+1}`;
+  jumpSelect.appendChild(opt);
+});
+
+function render(){
+  const item = questions[current];
+  progress.textContent = `Câu ${current+1} / ${questions.length}`;
+  sectionLabel.textContent = getSection(current);
+  questionText.textContent = item.q;
+  optionsBox.innerHTML = "";
+  feedback.textContent = "";
+  feedback.className = "feedback";
+  jumpSelect.value = current;
+
+  item.opts.forEach((opt,i)=>{
+    const div = document.createElement('div');
+    div.className = "option";
+    div.textContent = letters[i] + ". " + opt;
+    div.onclick = () => selectAnswer(i);
+    if(answered[current] !== null){
+      div.classList.add('disabled');
+      if(i === item.ans) div.classList.add('correct');
+      if(i === answered[current] && i !== item.ans) div.classList.add('wrong');
+    }
+    optionsBox.appendChild(div);
+  });
+
+  if(answered[current] !== null){
+    if(answered[current] === item.ans){
+      feedback.textContent = "✔ Chính xác!";
+      feedback.classList.add('correct');
+    } else {
+      feedback.textContent = "✘ Sai rồi. Đáp án đúng là " + letters[item.ans] + ".";
+      feedback.classList.add('wrong');
+    }
+  }
+
+  prevBtn.disabled = current === 0;
+  nextBtn.textContent = current === questions.length-1 ? "Xem kết quả" : "Câu tiếp →";
+}
+
+function selectAnswer(i){
+  if(answered[current] !== null) return;
+  answered[current] = i;
+  render();
+}
+
+prevBtn.onclick = () => { if(current>0){current--; render();} };
+nextBtn.onclick = () => {
+  if(current === questions.length-1){
+    showResult();
+  } else {
+    current++;
+    render();
+  }
+};
+
+jumpSelect.onchange = () => {
+  current = parseInt(jumpSelect.value);
+  render();
+};
+
+function showResult(){
+  quizCard.style.display = "none";
+  progress.style.display = "none";
+  sectionLabel.style.display = "none";
+  document.getElementById('jumpBox').style.display = "none";
+  let score = 0;
+  answered.forEach((a,i)=>{ if(a===questions[i].ans) score++; });
+  resultBox.style.display = "block";
+  scoreEl.textContent = `Bạn trả lời đúng ${score} / ${questions.length} câu`;
+}
+
+document.getElementById('restart').onclick = () => {
+  answered = new Array(questions.length).fill(null);
+  current = 0;
+  quizCard.style.display = "block";
+  progress.style.display = "block";
+  sectionLabel.style.display = "block";
+  document.getElementById('jumpBox').style.display = "block";
+  resultBox.style.display = "none";
+  render();
+};
+
+render();
+</script>
+</body>
+</html>
